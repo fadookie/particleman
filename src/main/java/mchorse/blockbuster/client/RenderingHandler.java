@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -102,6 +103,12 @@ public class RenderingHandler
      */
     public static void renderLitParticles(float partialTicks)
     {}
+
+    @SubscribeEvent
+    public void renderPlayer(RenderPlayerEvent.Post event) {
+//        System.out.println("renderPlayer e:" + event);
+        renderParticles(event.getPartialRenderTick());
+    }
 
     /**
      * Render particle emitters (called by ASM)
