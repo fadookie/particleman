@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLSync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +108,9 @@ public class RenderingHandler
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
 //        System.out.println("renderPlayer e:" + event);
+        GlStateManager.disableLighting();
         renderParticles(event.getPartialRenderTick());
+        GlStateManager.enableLighting();
     }
 
     /**
