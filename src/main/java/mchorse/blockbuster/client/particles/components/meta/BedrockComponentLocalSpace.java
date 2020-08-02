@@ -6,8 +6,8 @@ import mchorse.blockbuster.client.particles.components.BedrockComponentBase;
 import mchorse.blockbuster.client.particles.components.IComponentParticleInitialize;
 import mchorse.blockbuster.client.particles.emitter.BedrockEmitter;
 import mchorse.blockbuster.client.particles.emitter.BedrockParticle;
-import mchorse.blockbuster.client.particles.molang.MolangException;
-import mchorse.blockbuster.client.particles.molang.MolangParser;
+import com.eliotlash.molang.MolangException;
+import com.eliotlash.molang.MolangParser;
 
 public class BedrockComponentLocalSpace extends BedrockComponentBase implements IComponentParticleInitialize
 {

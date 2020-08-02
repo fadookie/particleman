@@ -1,4 +1,4 @@
-package mchorse.blockbuster.client.particles.molang;
+package com.eliotlash.molang;
 
 public class MolangException extends Exception
 {

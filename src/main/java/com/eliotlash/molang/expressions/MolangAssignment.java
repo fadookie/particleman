@@ -1,6 +1,6 @@
-package mchorse.blockbuster.client.particles.molang.expressions;
+package com.eliotlash.molang.expressions;
 
-import mchorse.blockbuster.client.particles.molang.MolangParser;
+import com.eliotlash.molang.MolangParser;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.Variable;
 

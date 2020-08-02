@@ -12,7 +12,7 @@ import mchorse.blockbuster.client.particles.components.IComponentParticleInitial
 import mchorse.blockbuster.client.particles.components.IComponentParticleRender;
 import mchorse.blockbuster.client.particles.components.IComponentParticleUpdate;
 import mchorse.blockbuster.client.particles.components.motion.BedrockComponentInitialSpeed;
-import mchorse.blockbuster.client.particles.molang.MolangParser;
+import com.eliotlash.molang.MolangParser;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;

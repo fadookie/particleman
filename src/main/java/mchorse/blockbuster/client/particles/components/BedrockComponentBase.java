@@ -2,8 +2,8 @@ package mchorse.blockbuster.client.particles.components;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import mchorse.blockbuster.client.particles.molang.MolangException;
-import mchorse.blockbuster.client.particles.molang.MolangParser;
+import com.eliotlash.molang.MolangException;
+import com.eliotlash.molang.MolangParser;
 
 public abstract class BedrockComponentBase
 {

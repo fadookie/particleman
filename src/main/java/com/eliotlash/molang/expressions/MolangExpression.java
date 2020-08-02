@@ -1,8 +1,8 @@
-package mchorse.blockbuster.client.particles.molang.expressions;
+package com.eliotlash.molang.expressions;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import mchorse.blockbuster.client.particles.molang.MolangParser;
+import com.eliotlash.molang.MolangParser;
 import mchorse.mclib.math.Constant;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.Operation;

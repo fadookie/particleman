@@ -1,4 +1,4 @@
-package mchorse.blockbuster.client.particles.molang.functions;
+package com.eliotlash.molang.functions;
 
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.functions.Function;

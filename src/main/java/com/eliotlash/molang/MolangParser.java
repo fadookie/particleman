@@ -1,13 +1,13 @@
-package mchorse.blockbuster.client.particles.molang;
+package com.eliotlash.molang;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import mchorse.blockbuster.client.particles.molang.expressions.MolangAssignment;
-import mchorse.blockbuster.client.particles.molang.expressions.MolangExpression;
-import mchorse.blockbuster.client.particles.molang.expressions.MolangMultiStatement;
-import mchorse.blockbuster.client.particles.molang.expressions.MolangValue;
-import mchorse.blockbuster.client.particles.molang.functions.CosDegrees;
-import mchorse.blockbuster.client.particles.molang.functions.SinDegrees;
+import com.eliotlash.molang.expressions.MolangAssignment;
+import com.eliotlash.molang.expressions.MolangExpression;
+import com.eliotlash.molang.expressions.MolangMultiStatement;
+import com.eliotlash.molang.expressions.MolangValue;
+import com.eliotlash.molang.functions.CosDegrees;
+import com.eliotlash.molang.functions.SinDegrees;
 import mchorse.mclib.math.Constant;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.MathBuilder;
