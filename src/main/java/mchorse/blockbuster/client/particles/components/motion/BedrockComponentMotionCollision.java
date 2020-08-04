@@ -9,7 +9,7 @@ import mchorse.blockbuster.client.particles.emitter.BedrockParticle;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
-import mchorse.mclib.math.Operation;
+import com.eliotlash.mclib.math.Operation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 

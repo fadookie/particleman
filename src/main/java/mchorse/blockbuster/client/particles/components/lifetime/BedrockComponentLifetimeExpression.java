@@ -7,7 +7,7 @@ import mchorse.blockbuster.client.particles.emitter.BedrockEmitter;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
-import mchorse.mclib.math.Operation;
+import com.eliotlash.mclib.math.Operation;
 
 public class BedrockComponentLifetimeExpression extends BedrockComponentLifetime
 {

@@ -36,8 +36,8 @@ import mchorse.blockbuster.client.particles.components.shape.BedrockComponentSha
 import mchorse.blockbuster.client.particles.components.shape.BedrockComponentShapePoint;
 import mchorse.blockbuster.client.particles.components.shape.BedrockComponentShapeSphere;
 import com.eliotlash.molang.MolangException;
-import mchorse.mclib.math.Operation;
-import mchorse.mclib.utils.resources.RLUtils;
+import com.eliotlash.mclib.math.Operation;
+import com.eliotlash.mclib.utils.resources.RLUtils;
 
 import java.lang.reflect.Type;
 import java.util.Map;

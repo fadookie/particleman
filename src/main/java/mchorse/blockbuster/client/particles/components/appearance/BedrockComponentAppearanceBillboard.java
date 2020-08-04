@@ -10,7 +10,7 @@ import mchorse.blockbuster.client.particles.emitter.BedrockParticle;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
-import mchorse.mclib.utils.Interpolations;
+import com.eliotlash.mclib.utils.Interpolations;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

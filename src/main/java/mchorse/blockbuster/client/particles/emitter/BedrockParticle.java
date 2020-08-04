@@ -1,7 +1,5 @@
 package mchorse.blockbuster.client.particles.emitter;
 
-import mchorse.mclib.utils.Interpolations;
-
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;

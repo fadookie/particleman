@@ -1,5 +1,7 @@
 package mchorse.mclib;
 
+import net.minecraft.util.math.MathHelper;
+
 /**
  * McLib mod
  *

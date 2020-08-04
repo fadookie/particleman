@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import mchorse.mclib.utils.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -19,14 +18,14 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * URL download thread
- * 
- * This bad boy downloads a picture from internet and puts it into the 
+ *
+ * This bad boy downloads a picture from internet and puts it into the
  * texture manager's.
  */
 public class URLDownloadThread implements Runnable
 {
     /**
-     * Look, MA! I'm Google Chrome on OS X!!! xD 
+     * Look, MA! I'm Google Chrome on OS X!!! xD
      */
     public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36";
 
@@ -61,7 +60,7 @@ public class URLDownloadThread implements Runnable
         TextureUtil.uploadTextureImageAllocate(texture.getGlTextureId(), image, false, false);
 
         TextureManager manager = Minecraft.getMinecraft().renderEngine;
-        Map<ResourceLocation, ITextureObject> map = ReflectionUtils.getTextures(manager);
+        Map<ResourceLocation, ITextureObject> map = mchorse.mclib.utils.ReflectionUtils.getTextures(manager);
 
         map.put(url, texture);
     }

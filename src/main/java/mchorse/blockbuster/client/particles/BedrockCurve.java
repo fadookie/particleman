@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
-import mchorse.mclib.math.Variable;
-import mchorse.mclib.utils.Interpolations;
-import mchorse.mclib.utils.MathUtils;
+import com.eliotlash.mclib.math.Variable;
+import com.eliotlash.mclib.utils.Interpolations;
+import com.eliotlash.mclib.utils.MathUtils;
 
 public class BedrockCurve
 {

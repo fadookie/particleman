@@ -10,7 +10,7 @@ import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
 import com.eliotlash.molang.expressions.MolangValue;
-import mchorse.mclib.math.Constant;
+import com.eliotlash.mclib.math.Constant;
 import net.minecraft.client.renderer.BufferBuilder;
 
 public class BedrockComponentRateSteady extends BedrockComponentRate implements IComponentParticleRender

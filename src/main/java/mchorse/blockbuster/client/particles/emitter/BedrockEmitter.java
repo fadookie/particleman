@@ -8,9 +8,9 @@ import mchorse.blockbuster.client.particles.components.IComponentParticleInitial
 import mchorse.blockbuster.client.particles.components.IComponentParticleRender;
 import mchorse.blockbuster.client.particles.components.IComponentParticleUpdate;
 import mchorse.blockbuster.client.textures.GifTexture;
-import mchorse.mclib.math.IValue;
-import mchorse.mclib.math.Variable;
-import mchorse.mclib.utils.Interpolations;
+import com.eliotlash.mclib.math.IValue;
+import com.eliotlash.mclib.math.Variable;
+import com.eliotlash.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

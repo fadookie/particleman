@@ -10,9 +10,9 @@ import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
 import com.eliotlash.molang.expressions.MolangValue;
-import mchorse.mclib.math.Constant;
-import mchorse.mclib.utils.Interpolations;
-import mchorse.mclib.utils.MathUtils;
+import com.eliotlash.mclib.math.Constant;
+import com.eliotlash.mclib.utils.Interpolations;
+import com.eliotlash.mclib.utils.MathUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

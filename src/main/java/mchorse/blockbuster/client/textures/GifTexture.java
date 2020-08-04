@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import mchorse.mclib.math.functions.limit.Min;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
