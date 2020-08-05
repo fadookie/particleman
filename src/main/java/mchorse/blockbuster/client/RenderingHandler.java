@@ -1,7 +1,9 @@
 package mchorse.blockbuster.client;
 
+import com.eliotlash.mclib.mcwrapper.BufferBuilderWrapper;
+import com.eliotlash.mclib.mcwrapper.EntityWrapper;
 import mchorse.blockbuster.Blockbuster;
-import mchorse.blockbuster.client.particles.emitter.BedrockEmitter;
+import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,6 +56,8 @@ public class RenderingHandler
         if (!emitters.isEmpty())
         {
             Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
+            EntityWrapper cameraWrapper = new EntityWrapper(camera);
+            int perspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
             double playerX = camera.prevPosX + (camera.posX - camera.prevPosX) * (double) partialTicks;
             double playerY = camera.prevPosY + (camera.posY - camera.prevPosY) * (double) partialTicks;
             double playerZ = camera.prevPosZ + (camera.posZ - camera.prevPosZ) * (double) partialTicks;
@@ -64,6 +68,7 @@ public class RenderingHandler
             GlStateManager.alphaFunc(516, 0.003921569F);
 
             BufferBuilder builder = Tessellator.getInstance().getBuffer();
+            BufferBuilderWrapper builderWrapper = new BufferBuilderWrapper(builder);
 
             GlStateManager.disableTexture2D();
 
@@ -76,8 +81,8 @@ public class RenderingHandler
             {
                 emitters.sort((a, b) ->
                 {
-                    double ad = a.getDistanceSq();
-                    double bd = b.getDistanceSq();
+                    double ad = a.getDistanceSq(perspective, cameraWrapper);
+                    double bd = b.getDistanceSq(perspective, cameraWrapper);
 
                     if (ad < bd)
                     {
@@ -94,7 +99,7 @@ public class RenderingHandler
 
             for (BedrockEmitter emitter : emitters)
             {
-                emitter.render(partialTicks);
+                emitter.render(partialTicks, builderWrapper, perspective, cameraWrapper);
                 emitter.running = emitter.sanityTicks < 2;
             }
 
@@ -112,7 +117,7 @@ public class RenderingHandler
             emitters.add(emitter);
 
             emitter.added = true;
-            emitter.setTarget(target);
+            emitter.setTarget(new EntityWrapper(target));
         }
     }
 

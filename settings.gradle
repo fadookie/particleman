@@ -8,6 +8,7 @@
  */
 
 rootProject.name = 'particleman'
-include ':mclib', ':molang'
+include ':mclib', ':molang', ':particlelib'
 project(':mclib').projectDir = new File('./mclib')
 project(':molang').projectDir = new File('./molang')
+project(':particlelib').projectDir = new File('./particlelib')
