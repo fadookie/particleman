@@ -2,7 +2,6 @@ package com.eliotlash.mclib.mcwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IBlock;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
-import com.eliotlash.particlelib.mcwrapper.VertexFormats;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,22 +32,5 @@ public class ConversionUtils {
 
     public static IBlock blockLookup(ResourceLocation resourceLocation) {
         return new BlockWrapper(ForgeRegistries.BLOCKS.getValue(abstractToConcreteRL(resourceLocation)));
-    }
-
-    static VertexFormat parseVertexEnum(VertexFormats format) {
-        switch(format) {
-            case POSITION_TEX_COLOR:
-                return DefaultVertexFormats.POSITION_TEX_COLOR;
-            case POSITION_TEX_LMAP_COLOR:
-                return DefaultVertexFormats.POSITION_TEX_LMAP_COLOR;
-            default:
-                throw new IllegalArgumentException("Unknown vertex format: " + format);
-        }
-    }
-
-    public static VertexFormats vertexFormatToEnum(VertexFormat format) {
-        if (format.equals(DefaultVertexFormats.POSITION_TEX_COLOR)) return VertexFormats.POSITION_TEX_COLOR;
-        if (format.equals(DefaultVertexFormats.POSITION_TEX_LMAP_COLOR)) return VertexFormats.POSITION_TEX_LMAP_COLOR;
-        throw new IllegalArgumentException("Unknown vertex format: " + format);
     }
 }

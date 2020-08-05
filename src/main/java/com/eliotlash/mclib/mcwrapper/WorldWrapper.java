@@ -17,22 +17,21 @@ public class WorldWrapper implements IWorld {
 
     @Override
     public boolean isBlockLoaded(BlockPos pos) {
+        // TODO This could potentially create a lot of garbage depending on how often this method is called
         return world.isBlockLoaded(ConversionUtils.abstractToConcreteBlockPos(pos));
     }
 
     @Override
     public IBlock getBlockAtPos(BlockPos pos) {
+        // TODO This could potentially create a lot of garbage depending on how often this method is called
         return new BlockWrapper(world.getBlockState(ConversionUtils.abstractToConcreteBlockPos(pos)).getBlock());
-    }
-
-    @Override
-    public int getCombinedLight(BlockPos pos, int lightValue) {
-        return world.getCombinedLight(ConversionUtils.abstractToConcreteBlockPos(pos), lightValue);
     }
 
     @Override
     public List<AxisAlignedBB> getCollisionBoxes(IEntity entityIn, AxisAlignedBB aabb) {
         Entity wrappedEntity = ((EntityWrapper)entityIn).entity;
+        // TODO This could potentially create a lot of garbage depending on how often this method is called - may need
+        // to optimize allocations of abstract AABBs using an object pool, or switch to using a mixin interface
         return world.getCollisionBoxes(wrappedEntity, ConversionUtils.abstractToConcreteAABB(aabb))
                 .stream()
                 .map(ConversionUtils::concreteToAbstractAABB)

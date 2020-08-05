@@ -9,7 +9,7 @@ import com.eliotlash.particlelib.particles.components.IComponentBase;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterInitialize;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterUpdate;
 import com.eliotlash.particlelib.particles.components.IComponentParticleInitialize;
-import com.eliotlash.particlelib.particles.components.IComponentParticleRender;
+import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.particlelib.particles.components.IComponentParticleUpdate;
 import com.eliotlash.particlelib.particles.components.motion.BedrockComponentInitialSpeed;
 import com.eliotlash.molang.MolangParser;
@@ -29,9 +29,17 @@ public class BedrockScheme
 		BedrockScheme.defaultTexture = defaultTexture;
 	}
 
-	public static final Gson JSON_PARSER = new GsonBuilder()
-		.registerTypeAdapter(BedrockScheme.class, new BedrockSchemeJsonAdapter())
-		.create();
+	public static Gson JSON_PARSER;
+
+	/**
+	 * MUST be called before trying to parse JSON to register your concrete JSON adapter
+	 * @param jsonAdapter Implementing your concrete types for renderable components
+	 */
+	public static void setJsonAdapter(BedrockSchemeJsonAdapter jsonAdapter) {
+		JSON_PARSER = new GsonBuilder()
+				.registerTypeAdapter(BedrockScheme.class, jsonAdapter)
+				.create();
+	}
 
 	/* Particles identifier */
 	public String identifier = "";
@@ -49,7 +57,7 @@ public class BedrockScheme
 	public List<IComponentEmitterUpdate> emitterUpdates;
 	public List<IComponentParticleInitialize> particleInitializes;
 	public List<IComponentParticleUpdate> particleUpdates;
-	public List<IComponentParticleRender> particleRender;
+	public List<IComponentParticleRenderBase> particleRender;
 
 	private boolean factory;
 
@@ -100,7 +108,7 @@ public class BedrockScheme
 		this.emitterUpdates = this.getComponents(IComponentEmitterUpdate.class);
 		this.particleInitializes = this.getComponents(IComponentParticleInitialize.class);
 		this.particleUpdates = this.getComponents(IComponentParticleUpdate.class);
-		this.particleRender = this.getComponents(IComponentParticleRender.class);
+		this.particleRender = this.getComponents(IComponentParticleRenderBase.class);
 
 		/* Link variables with curves */
 		for (Map.Entry<String, BedrockCurve> entry : this.curves.entrySet())

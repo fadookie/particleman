@@ -5,6 +5,8 @@ import com.eliotlash.particlelib.Settings;
 import mchorse.blockbuster.client.RenderingHandler;
 import com.eliotlash.particlelib.particles.BedrockScheme;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
+import mchorse.blockbuster.client.particles.RenderableBedrockSchemeJsonAdapter;
+import mchorse.blockbuster.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod.EventBusSubscriber(modid= ExampleMod.MODID)
 public class ModEventBus
 {
-    public static BedrockEmitter emitter;
+    public static RenderableBedrockEmitter emitter;
     public static BedrockScheme scheme;
 
     @SubscribeEvent
@@ -33,7 +35,7 @@ public class ModEventBus
 
             if (emitter == null || emitter.isFinished())
             {
-                emitter = new BedrockEmitter();
+                emitter = new RenderableBedrockEmitter();
                 emitter.setScheme(scheme);
             }
 
@@ -46,5 +48,9 @@ public class ModEventBus
 
             RenderingHandler.addEmitter(emitter, event.player);
         }
+    }
+
+    static {
+        BedrockScheme.setJsonAdapter(new RenderableBedrockSchemeJsonAdapter());
     }
 }

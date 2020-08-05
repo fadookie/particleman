@@ -1,9 +1,8 @@
 package mchorse.blockbuster.client;
 
-import com.eliotlash.mclib.mcwrapper.BufferBuilderWrapper;
-import com.eliotlash.mclib.mcwrapper.EntityWrapper;
 import mchorse.blockbuster.Blockbuster;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
+import mchorse.blockbuster.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,7 +30,7 @@ public class RenderingHandler
     /**
      * Bedrock particle emitters
      */
-    private static final List<BedrockEmitter> emitters = new ArrayList<>();
+    private static final List<RenderableBedrockEmitter> emitters = new ArrayList<>();
 
     /**
      * Render lit particles (call by ASM, but not used for anything yet...
@@ -56,8 +55,6 @@ public class RenderingHandler
         if (!emitters.isEmpty())
         {
             Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
-            EntityWrapper cameraWrapper = new EntityWrapper(camera);
-            int perspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
             double playerX = camera.prevPosX + (camera.posX - camera.prevPosX) * (double) partialTicks;
             double playerY = camera.prevPosY + (camera.posY - camera.prevPosY) * (double) partialTicks;
             double playerZ = camera.prevPosZ + (camera.posZ - camera.prevPosZ) * (double) partialTicks;
@@ -68,7 +65,6 @@ public class RenderingHandler
             GlStateManager.alphaFunc(516, 0.003921569F);
 
             BufferBuilder builder = Tessellator.getInstance().getBuffer();
-            BufferBuilderWrapper builderWrapper = new BufferBuilderWrapper(builder);
 
             GlStateManager.disableTexture2D();
 
@@ -81,8 +77,8 @@ public class RenderingHandler
             {
                 emitters.sort((a, b) ->
                 {
-                    double ad = a.getDistanceSq(perspective, cameraWrapper);
-                    double bd = b.getDistanceSq(perspective, cameraWrapper);
+                    double ad = a.getDistanceSq();
+                    double bd = b.getDistanceSq();
 
                     if (ad < bd)
                     {
@@ -97,9 +93,9 @@ public class RenderingHandler
                 });
             }
 
-            for (BedrockEmitter emitter : emitters)
+            for (RenderableBedrockEmitter emitter : emitters)
             {
-                emitter.render(partialTicks, builderWrapper, perspective, cameraWrapper);
+                emitter.render(partialTicks);
                 emitter.running = emitter.sanityTicks < 2;
             }
 
@@ -110,24 +106,24 @@ public class RenderingHandler
         }
     }
 
-    public static void addEmitter(BedrockEmitter emitter, EntityLivingBase target)
+    public static void addEmitter(RenderableBedrockEmitter emitter, EntityLivingBase target)
     {
         if (!emitter.added)
         {
             emitters.add(emitter);
 
             emitter.added = true;
-            emitter.setTarget(new EntityWrapper(target));
+            emitter.setTarget(target);
         }
     }
 
     public static void updateEmitters()
     {
-        Iterator<BedrockEmitter> it = emitters.iterator();
+        Iterator<RenderableBedrockEmitter> it = emitters.iterator();
 
         while (it.hasNext())
         {
-            BedrockEmitter emitter = it.next();
+            RenderableBedrockEmitter emitter = it.next();
 
             emitter.update();
 

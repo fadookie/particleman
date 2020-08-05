@@ -43,7 +43,7 @@ import com.eliotlash.mclib.math.Operation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class BedrockSchemeJsonAdapter implements JsonDeserializer<BedrockScheme>, JsonSerializer<BedrockScheme>
+public abstract class BedrockSchemeJsonAdapter implements JsonDeserializer<BedrockScheme>, JsonSerializer<BedrockScheme>
 {
 	public BiMap<String, Class<? extends BedrockComponentBase>> components = HashBiMap.create();
 
@@ -82,7 +82,7 @@ public class BedrockSchemeJsonAdapter implements JsonDeserializer<BedrockScheme>
 
 		/* Rate */
 		this.components.put("minecraft:emitter_rate_instant", BedrockComponentRateInstant.class);
-		this.components.put("minecraft:emitter_rate_steady", BedrockComponentRateSteady.class);
+//		this.components.put("minecraft:emitter_rate_steady", BedrockComponentRateSteady.class);
 
 		/* Lifetime emitter */
 		this.components.put("minecraft:emitter_lifetime_looping", BedrockComponentLifetimeLooping.class);
@@ -103,9 +103,9 @@ public class BedrockSchemeJsonAdapter implements JsonDeserializer<BedrockScheme>
 		this.components.put("minecraft:particle_kill_plane", BedrockComponentKillPlane.class);
 
 		/* Appearance */
-		this.components.put("minecraft:particle_appearance_billboard", BedrockComponentAppearanceBillboard.class);
+//		this.components.put("minecraft:particle_appearance_billboard", BedrockComponentAppearanceBillboard.class);
 		this.components.put("minecraft:particle_appearance_lighting", BedrockComponentAppearanceLighting.class);
-		this.components.put("minecraft:particle_appearance_tinting", BedrockComponentAppearanceTinting.class);
+//		this.components.put("minecraft:particle_appearance_tinting", BedrockComponentAppearanceTinting.class);
 
 		/* Motion & Rotation */
 		this.components.put("minecraft:particle_initial_speed", BedrockComponentInitialSpeed.class);

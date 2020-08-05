@@ -1,22 +1,19 @@
 package com.eliotlash.particlelib.particles.emitter;
 
-import com.eliotlash.particlelib.Settings;
-import com.eliotlash.particlelib.mcwrapper.*;
+import com.eliotlash.particlelib.mcwrapper.IEntity;
+import com.eliotlash.particlelib.mcwrapper.IWorld;
 import com.eliotlash.particlelib.particles.components.IComponentParticleInitialize;
 import com.eliotlash.particlelib.particles.components.IComponentParticleUpdate;
 import com.eliotlash.particlelib.particles.BedrockScheme;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterInitialize;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterUpdate;
-import com.eliotlash.particlelib.particles.components.IComponentParticleRender;
 //import mchorse.blockbuster.client.textures.GifTexture;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.mclib.math.Variable;
-import com.eliotlash.mclib.utils.Interpolations;
 //import net.minecraft.client.renderer.GlStateManager;
 //import net.minecraft.client.renderer.Tessellator;
 //import net.minecraft.entity.Entity;
 //import net.minecraft.entity.EntityLivingBase;
-//import net.minecraft.world.World;
 //import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix3f;
@@ -28,20 +25,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class BedrockEmitter
+public abstract class BedrockEmitter
 {
+	public IEntity target;
+	public IWorld world;
+
 	public BedrockScheme scheme;
 	public List<BedrockParticle> particles = new ArrayList<BedrockParticle>();
 	public Map<String, IValue> variables;
 
-	public IEntity target;
-	public IWorld world;
 	public boolean lit;
 
 	public boolean added;
 	public int sanityTicks;
 	public boolean running = true;
-	private BedrockParticle guiParticle;
+
+	protected BedrockParticle guiParticle;
 
 	/* Intermediate values */
 	public Vector3d lastGlobal = new Vector3d();
@@ -57,17 +56,6 @@ public class BedrockEmitter
 	public float random2 = (float) Math.random();
 	public float random3 = (float) Math.random();
 	public float random4 = (float) Math.random();
-
-	private BlockPos blockPos = new BlockPos();
-
-	/* Camera properties */
-	public int perspective;
-	public float cYaw;
-	public float cPitch;
-
-	public double cX;
-	public double cY;
-	public double cZ;
 
 	/* Cached variable references to avoid hash look ups */
 	private Variable varAge;
@@ -89,17 +77,6 @@ public class BedrockEmitter
 		return !this.running && this.particles.isEmpty();
 	}
 
-	public double getDistanceSq(int perspective, IEntity camera)
-	{
-		this.setupCameraProperties(0F, perspective, camera);
-
-		double dx = this.cX -  this.lastGlobal.x;
-		double dy = this.cY -  this.lastGlobal.y;
-		double dz = this.cZ -  this.lastGlobal.z;
-
-		return dx * dx + dy * dy + dz * dz;
-	}
-
 	public double getAge()
 	{
 		return this.getAge(0);
@@ -108,12 +85,6 @@ public class BedrockEmitter
 	public double getAge(float partialTicks)
 	{
 		return (this.age + partialTicks) / 20.0;
-	}
-
-	public void setTarget(IEntity target)
-	{
-		this.target = target;
-		this.world = target == null ? null : target.getWorld();
 	}
 
 	public void setScheme(BedrockScheme scheme)
@@ -317,7 +288,7 @@ public class BedrockEmitter
 	/**
 	 * Create a new particle
 	 */
-	private BedrockParticle createParticle(boolean forceRelative)
+	protected BedrockParticle createParticle(boolean forceRelative)
 	{
 		BedrockParticle particle = new BedrockParticle();
 
@@ -352,139 +323,11 @@ public class BedrockEmitter
 		return particle;
 	}
 
-	/**
-	 * Render the particle on screen
-	 */
-	public void renderOnScreen(int x, int y, float scale, float partialTicks, IBufferBuilder bufferBuilder)
-	{
-		if (this.scheme == null)
-		{
-			return;
-		}
-
-//		float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
-		List<IComponentParticleRender> list = this.scheme.getComponents(IComponentParticleRender.class);
-
-		if (!list.isEmpty())
-		{
-//			GifTexture.bindTexture(this.scheme.texture);
-
-//			GlStateManager.enableBlend();
-//			GlStateManager.disableCull();
-
-			if (this.guiParticle == null || this.guiParticle.dead)
-			{
-				this.guiParticle = this.createParticle(true);
-			}
-
-			this.rotation.setIdentity();
-			this.guiParticle.update(this);
-			this.setEmitterVariables(partialTicks);
-			this.setParticleVariables(this.guiParticle, partialTicks);
-
-			for (IComponentParticleRender render : list)
-			{
-				render.renderOnScreen(this.guiParticle, x, y, scale, partialTicks, bufferBuilder);
-			}
-
-//			GlStateManager.disableBlend();
-//			GlStateManager.enableCull();
-		}
-	}
-
-	/**
-	 * Render all the particles in this particle emitter
-	 */
-	public void render(float partialTicks, IBufferBuilder builder, int perspective, IEntity camera)
-	{
-		if (this.scheme == null)
-		{
-			return;
-		}
-
-		this.setupCameraProperties(partialTicks, perspective, camera);
-
-//		BufferBuilder builder = Tessellator.getInstance().getBuffer();
-		List<IComponentParticleRender> renders = this.scheme.particleRender;
-
-		for (IComponentParticleRender component : renders)
-		{
-			component.preRender(this, partialTicks);
-		}
-
-		if (!this.particles.isEmpty())
-		{
-			if (Settings.getParticleSorting())
-			{
-				this.particles.sort((a, b) ->
-				{
-					double ad = a.getDistanceSq(this);
-					double bd = b.getDistanceSq(this);
-
-					if (ad < bd)
-					{
-						return 1;
-					}
-					else if (ad > bd)
-					{
-						return -1;
-					}
-
-					return 0;
-				});
-			}
-
-//			GifTexture.bindTexture(this.scheme.texture, this.age, partialTicks);
-			builder.begin(IBufferBuilder.GL_QUADS, VertexFormats.POSITION_TEX_LMAP_COLOR);
-
-			for (BedrockParticle particle : this.particles)
-			{
-				this.setEmitterVariables(partialTicks);
-				this.setParticleVariables(particle, partialTicks);
-
-				for (IComponentParticleRender component : renders)
-				{
-					component.render(this, particle, builder, partialTicks);
-				}
-			}
-
-//			Tessellator.getInstance().draw();
-		}
-
-		for (IComponentParticleRender component : renders)
-		{
-			component.postRender(this, partialTicks);
-		}
-	}
-
-	public void setupCameraProperties(float partialTicks, int perspective, IEntity camera)
-	{
-		if (this.world != null)
-		{
-//			Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
-
-//			this.perspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
-            this.perspective = perspective;
-			this.cYaw = 180 - Interpolations.lerp(camera.getPrevRotationYaw(), camera.getRotationYaw(), partialTicks);
-			this.cPitch = 180 - Interpolations.lerp(camera.getPrevRotationPitch(), camera.getRotationPitch(), partialTicks);
-			this.cX = Interpolations.lerp(camera.getPrevPosX(), camera.getPosX(), partialTicks);
-			this.cY = Interpolations.lerp(camera.getPrevPosY(), camera.getPosY(), partialTicks) + camera.getEyeHeight();
-			this.cZ = Interpolations.lerp(camera.getPrevPosZ(), camera.getPosZ(), partialTicks);
-		}
-	}
-
-	/**
-	 * Get brightness for the block
-	 */
-	public int getBrightnessForRender(float partialTicks, double x, double y, double z)
-	{
-		if (this.lit || this.world == null)
-		{
-			return 15728880;
-		}
-
-		this.blockPos.setPos((int)x, (int)y, (int)z);
-
-		return this.world.isBlockLoaded(this.blockPos) ? this.world.getCombinedLight(this.blockPos, 0) : 0;
-	}
+	// Rendering stubs
+	public abstract double getDistanceSq();
+	// Cannot add setTarget as it contains Entity
+	public abstract void renderOnScreen(int x, int y, float scale);
+	public abstract void render(float partialTicks);
+	public abstract void setupCameraProperties(float partialTicks);
+	public abstract int getBrightnessForRender(float partialTicks, double x, double y, double z);
 }

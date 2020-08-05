@@ -57,17 +57,6 @@ public class BedrockParticle
 		this.matrix.setIdentity();
 	}
 
-	public double getDistanceSq(BedrockEmitter emitter)
-	{
-		Vector3d pos = this.getGlobalPosition(emitter);
-
-		double dx = emitter.cX - pos.x;
-		double dy = emitter.cY - pos.y;
-		double dz = emitter.cZ - pos.z;
-
-		return dx * dx + dy * dy + dz * dz;
-	}
-
 	public double getAge(float partialTick)
 	{
 		return (this.age + partialTick) / 20.0;

@@ -1,19 +1,17 @@
 package com.eliotlash.particlelib.particles.components.rate;
 
-import com.eliotlash.particlelib.mcwrapper.IBufferBuilder;
 import com.eliotlash.particlelib.particles.components.BedrockComponentBase;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
-import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.eliotlash.particlelib.particles.components.IComponentParticleRender;
+import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
 import com.eliotlash.molang.expressions.MolangValue;
 import com.eliotlash.mclib.math.Constant;
 
-public class BedrockComponentRateSteady extends BedrockComponentRate implements IComponentParticleRender
+public class BedrockComponentRateSteady extends BedrockComponentRate implements IComponentParticleRenderBase
 {
 	public static final MolangExpression DEFAULT_PARTICLES = new MolangValue(null, new Constant(50));
 
@@ -49,14 +47,6 @@ public class BedrockComponentRateSteady extends BedrockComponentRate implements 
 
 	@Override
 	public void preRender(BedrockEmitter emitter, float partialTicks)
-	{}
-
-	@Override
-	public void render(BedrockEmitter emitter, BedrockParticle particle, IBufferBuilder builder, float partialTicks)
-	{}
-
-	@Override
-	public void renderOnScreen(BedrockParticle particle, int x, int y, float scale, float partialTicks, IBufferBuilder builder)
 	{}
 
 	@Override

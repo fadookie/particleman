@@ -1,29 +1,17 @@
 package com.eliotlash.particlelib.particles.components.appearance;
 
-import com.eliotlash.particlelib.mcwrapper.VertexFormats;
-import com.eliotlash.particlelib.mcwrapper.IBufferBuilder;
 import com.eliotlash.particlelib.particles.components.BedrockComponentBase;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.eliotlash.particlelib.particles.components.IComponentParticleRender;
+import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 import com.eliotlash.molang.expressions.MolangExpression;
-import com.eliotlash.mclib.utils.Interpolations;
-//import net.minecraft.client.renderer.BufferBuilder;
-//import net.minecraft.client.renderer.Tessellator;
-//import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-//import net.minecraft.util.math.MathHelper;
-//import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
-
-public class BedrockComponentAppearanceBillboard extends BedrockComponentBase implements IComponentParticleRender
+public abstract class BedrockComponentAppearanceBillboard extends BedrockComponentBase implements IComponentParticleRenderBase
 {
 	/* Options */
 	public MolangExpression sizeW = MolangParser.ZERO;
@@ -45,26 +33,15 @@ public class BedrockComponentAppearanceBillboard extends BedrockComponentBase im
 	public boolean loop = false;
 
 	/* Runtime properties */
-	private float w;
-	private float h;
+	protected float w;
+	protected float h;
 
-	private float u1;
-	private float v1;
-	private float u2;
-	private float v2;
+	protected float u1;
+	protected float v1;
+	protected float u2;
+	protected float v2;
 
-	private Matrix4f transform = new Matrix4f();
-	private Matrix4f rotation = new Matrix4f();
-	private Vector4f[] vertices = new Vector4f[] {
-		new Vector4f(0, 0, 0, 1),
-		new Vector4f(0, 0, 0, 1),
-		new Vector4f(0, 0, 0, 1),
-		new Vector4f(0, 0, 0, 1)
-	};
-	private Vector3f vector = new Vector3f();
-
-	public BedrockComponentAppearanceBillboard()
-	{}
+	public BedrockComponentAppearanceBillboard() {}
 
 	@Override
 	public BedrockComponentBase fromJson(JsonElement elem, MolangParser parser) throws MolangException
@@ -256,147 +233,147 @@ public class BedrockComponentAppearanceBillboard extends BedrockComponentBase im
 	public void preRender(BedrockEmitter emitter, float partialTicks)
 	{}
 
-	@Override
-	public void render(BedrockEmitter emitter, BedrockParticle particle, IBufferBuilder builder, float partialTicks)
-	{
-		this.calculateUVs(particle, partialTicks);
-
-		/* Render the particle */
-		double px = Interpolations.lerp(particle.prevPosition.x, particle.position.x, partialTicks);
-		double py = Interpolations.lerp(particle.prevPosition.y, particle.position.y, partialTicks);
-		double pz = Interpolations.lerp(particle.prevPosition.z, particle.position.z, partialTicks);
-		float angle = Interpolations.lerp(particle.prevRotation, particle.rotation, partialTicks);
-
-		if (particle.relativePosition && particle.relativeRotation)
-		{
-			this.vector.set((float) px, (float) py, (float) pz);
-			emitter.rotation.transform(this.vector);
-
-			px = this.vector.x;
-			py = this.vector.y;
-			pz = this.vector.z;
-
-			px += emitter.lastGlobal.x;
-			py += emitter.lastGlobal.y;
-			pz += emitter.lastGlobal.z;
-		}
-
-		/* Calculate yaw and pitch based on the facing mode */
-		float entityYaw = emitter.cYaw;
-		float entityPitch = emitter.cPitch;
-		double entityX = emitter.cX;
-		double entityY = emitter.cY;
-		double entityZ = emitter.cZ;
-		boolean lookAt = this.facing == CameraFacing.LOOKAT_XYZ || this.facing == CameraFacing.LOOKAT_Y;
-
-		/* Flip width when frontal perspective mode */
-		if (emitter.perspective == 2)
-		{
-			this.w = -this.w;
-		}
-		/* In GUI renderer */
-		else if (emitter.perspective == 100 && !lookAt)
-		{
-			entityYaw = 180 - entityYaw;
-
-			this.w = -this.w;
-			this.h = -this.h;
-		}
-
-		if (lookAt)
-		{
-			double dX = entityX - px;
-			double dY = entityY - py;
-			double dZ = entityZ - pz;
-			double horizontalDistance = Math.sqrt(dX * dX + dZ * dZ);
-
-			entityYaw = 180 - (float) (Math.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
-			entityPitch = (float) (-(Math.atan2(dY, horizontalDistance) * (180D / Math.PI))) + 180;
-		}
-
-		/* Calculate the geometry for billboards using cool matrix math */
-		int light = emitter.getBrightnessForRender(partialTicks, px, py, pz);
-		int lightX = light >> 16 & 65535;
-		int lightY = light & 65535;
-
-		this.vertices[0].set(-this.w / 2, -this.h / 2, 0, 1);
-		this.vertices[1].set(this.w / 2, -this.h / 2, 0, 1);
-		this.vertices[2].set(this.w / 2, this.h / 2, 0, 1);
-		this.vertices[3].set(-this.w / 2, this.h / 2, 0, 1);
-		this.transform.setIdentity();
-
-		if (this.facing == CameraFacing.ROTATE_XYZ || this.facing == CameraFacing.LOOKAT_XYZ)
-		{
-			this.rotation.rotY(entityYaw / 180 * (float) Math.PI);
-			this.transform.mul(this.rotation);
-			this.rotation.rotX(entityPitch / 180 * (float) Math.PI);
-			this.transform.mul(this.rotation);
-		}
-		else if (this.facing == CameraFacing.ROTATE_Y || this.facing == CameraFacing.LOOKAT_Y) {
-			this.rotation.rotY(entityYaw / 180 * (float) Math.PI);
-			this.transform.mul(this.rotation);
-		}
-
-		this.rotation.rotZ(angle / 180 * (float) Math.PI);
-		this.transform.mul(this.rotation);
-		this.transform.setTranslation(new Vector3f((float) px, (float) py, (float) pz));
-
-		for (Vector4f vertex : this.vertices)
-		{
-			this.transform.transform(vertex);
-		}
-
-		float u1 = this.u1 / (float) this.textureWidth;
-		float u2 = this.u2 / (float) this.textureWidth;
-		float v1 = this.v1 / (float) this.textureHeight;
-		float v2 = this.v2 / (float) this.textureHeight;
-
-		builder.pos(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z).tex(u1, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z).tex(u2, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z).tex(u2, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z).tex(u1, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-	}
-
-	@Override
-	public void renderOnScreen(BedrockParticle particle, int x, int y, float scale, float partialTicks, IBufferBuilder builder)
-	{
-		this.calculateUVs(particle, partialTicks);
-
-		this.w = this.h = 0.5F;
-		float angle = Interpolations.lerp(particle.prevRotation, particle.rotation, partialTicks);
-
-		/* Calculate the geometry for billboards using cool matrix math */
-		this.vertices[0].set(-this.w / 2, -this.h / 2, 0, 1);
-		this.vertices[1].set(this.w / 2, -this.h / 2, 0, 1);
-		this.vertices[2].set(this.w / 2, this.h / 2, 0, 1);
-		this.vertices[3].set(-this.w / 2, this.h / 2, 0, 1);
-		this.transform.setIdentity();
-		this.transform.setScale(scale * 2.75F);
-		this.transform.setTranslation(new Vector3f(x, y - scale / 2, 0));
-
-		this.rotation.rotZ(angle / 180 * (float) Math.PI);
-		this.transform.mul(this.rotation);
-
-		for (Vector4f vertex : this.vertices)
-		{
-			this.transform.transform(vertex);
-		}
-
-		float u1 = this.u1 / (float) this.textureWidth;
-		float u2 = this.u2 / (float) this.textureWidth;
-		float v1 = this.v1 / (float) this.textureHeight;
-		float v2 = this.v2 / (float) this.textureHeight;
-
-//		BufferBuilder builder = Tessellator.getInstance().getBuffer();
-
-		builder.begin(IBufferBuilder.GL_QUADS, VertexFormats.POSITION_TEX_COLOR);
-		builder.pos(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z).tex(u1, v1).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z).tex(u2, v1).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z).tex(u2, v2).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z).tex(u1, v2).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-
-//		Tessellator.getInstance().draw();
-	}
+//	@Override
+//	public void render(BedrockEmitter emitter, BedrockParticle particle, IBufferBuilder builder, float partialTicks)
+//	{
+//		this.calculateUVs(particle, partialTicks);
+//
+//		/* Render the particle */
+//		double px = Interpolations.lerp(particle.prevPosition.x, particle.position.x, partialTicks);
+//		double py = Interpolations.lerp(particle.prevPosition.y, particle.position.y, partialTicks);
+//		double pz = Interpolations.lerp(particle.prevPosition.z, particle.position.z, partialTicks);
+//		float angle = Interpolations.lerp(particle.prevRotation, particle.rotation, partialTicks);
+//
+//		if (particle.relativePosition && particle.relativeRotation)
+//		{
+//			this.vector.set((float) px, (float) py, (float) pz);
+//			emitter.rotation.transform(this.vector);
+//
+//			px = this.vector.x;
+//			py = this.vector.y;
+//			pz = this.vector.z;
+//
+//			px += emitter.lastGlobal.x;
+//			py += emitter.lastGlobal.y;
+//			pz += emitter.lastGlobal.z;
+//		}
+//
+//		/* Calculate yaw and pitch based on the facing mode */
+//		float entityYaw = emitter.cYaw;
+//		float entityPitch = emitter.cPitch;
+//		double entityX = emitter.cX;
+//		double entityY = emitter.cY;
+//		double entityZ = emitter.cZ;
+//		boolean lookAt = this.facing == CameraFacing.LOOKAT_XYZ || this.facing == CameraFacing.LOOKAT_Y;
+//
+//		/* Flip width when frontal perspective mode */
+//		if (emitter.perspective == 2)
+//		{
+//			this.w = -this.w;
+//		}
+//		/* In GUI renderer */
+//		else if (emitter.perspective == 100 && !lookAt)
+//		{
+//			entityYaw = 180 - entityYaw;
+//
+//			this.w = -this.w;
+//			this.h = -this.h;
+//		}
+//
+//		if (lookAt)
+//		{
+//			double dX = entityX - px;
+//			double dY = entityY - py;
+//			double dZ = entityZ - pz;
+//			double horizontalDistance = Math.sqrt(dX * dX + dZ * dZ);
+//
+//			entityYaw = 180 - (float) (Math.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
+//			entityPitch = (float) (-(Math.atan2(dY, horizontalDistance) * (180D / Math.PI))) + 180;
+//		}
+//
+//		/* Calculate the geometry for billboards using cool matrix math */
+//		int light = emitter.getBrightnessForRender(partialTicks, px, py, pz);
+//		int lightX = light >> 16 & 65535;
+//		int lightY = light & 65535;
+//
+//		this.vertices[0].set(-this.w / 2, -this.h / 2, 0, 1);
+//		this.vertices[1].set(this.w / 2, -this.h / 2, 0, 1);
+//		this.vertices[2].set(this.w / 2, this.h / 2, 0, 1);
+//		this.vertices[3].set(-this.w / 2, this.h / 2, 0, 1);
+//		this.transform.setIdentity();
+//
+//		if (this.facing == CameraFacing.ROTATE_XYZ || this.facing == CameraFacing.LOOKAT_XYZ)
+//		{
+//			this.rotation.rotY(entityYaw / 180 * (float) Math.PI);
+//			this.transform.mul(this.rotation);
+//			this.rotation.rotX(entityPitch / 180 * (float) Math.PI);
+//			this.transform.mul(this.rotation);
+//		}
+//		else if (this.facing == CameraFacing.ROTATE_Y || this.facing == CameraFacing.LOOKAT_Y) {
+//			this.rotation.rotY(entityYaw / 180 * (float) Math.PI);
+//			this.transform.mul(this.rotation);
+//		}
+//
+//		this.rotation.rotZ(angle / 180 * (float) Math.PI);
+//		this.transform.mul(this.rotation);
+//		this.transform.setTranslation(new Vector3f((float) px, (float) py, (float) pz));
+//
+//		for (Vector4f vertex : this.vertices)
+//		{
+//			this.transform.transform(vertex);
+//		}
+//
+//		float u1 = this.u1 / (float) this.textureWidth;
+//		float u2 = this.u2 / (float) this.textureWidth;
+//		float v1 = this.v1 / (float) this.textureHeight;
+//		float v2 = this.v2 / (float) this.textureHeight;
+//
+//		builder.pos(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z).tex(u1, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z).tex(u2, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z).tex(u2, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z).tex(u1, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//	}
+//
+//	@Override
+//	public void renderOnScreen(BedrockParticle particle, int x, int y, float scale, float partialTicks, IBufferBuilder builder)
+//	{
+//		this.calculateUVs(particle, partialTicks);
+//
+//		this.w = this.h = 0.5F;
+//		float angle = Interpolations.lerp(particle.prevRotation, particle.rotation, partialTicks);
+//
+//		/* Calculate the geometry for billboards using cool matrix math */
+//		this.vertices[0].set(-this.w / 2, -this.h / 2, 0, 1);
+//		this.vertices[1].set(this.w / 2, -this.h / 2, 0, 1);
+//		this.vertices[2].set(this.w / 2, this.h / 2, 0, 1);
+//		this.vertices[3].set(-this.w / 2, this.h / 2, 0, 1);
+//		this.transform.setIdentity();
+//		this.transform.setScale(scale * 2.75F);
+//		this.transform.setTranslation(new Vector3f(x, y - scale / 2, 0));
+//
+//		this.rotation.rotZ(angle / 180 * (float) Math.PI);
+//		this.transform.mul(this.rotation);
+//
+//		for (Vector4f vertex : this.vertices)
+//		{
+//			this.transform.transform(vertex);
+//		}
+//
+//		float u1 = this.u1 / (float) this.textureWidth;
+//		float u2 = this.u2 / (float) this.textureWidth;
+//		float v1 = this.v1 / (float) this.textureHeight;
+//		float v2 = this.v2 / (float) this.textureHeight;
+//
+////		BufferBuilder builder = Tessellator.getInstance().getBuffer();
+//
+//		builder.begin(IBufferBuilder.GL_QUADS, VertexFormats.POSITION_TEX_COLOR);
+//		builder.pos(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z).tex(u1, v1).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z).tex(u2, v1).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z).tex(u2, v2).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//		builder.pos(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z).tex(u1, v2).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+//
+////		Tessellator.getInstance().draw();
+//	}
 
 	public void calculateUVs(BedrockParticle particle, float partialTicks)
 	{

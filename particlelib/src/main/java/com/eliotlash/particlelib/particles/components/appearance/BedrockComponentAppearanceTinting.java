@@ -1,18 +1,16 @@
 package com.eliotlash.particlelib.particles.components.appearance;
 
-import com.eliotlash.particlelib.mcwrapper.IBufferBuilder;
 import com.eliotlash.particlelib.particles.components.BedrockComponentBase;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
-import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.eliotlash.particlelib.particles.BedrockSchemeJsonAdapter;
-import com.eliotlash.particlelib.particles.components.IComponentParticleRender;
+import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
 //import net.minecraft.client.renderer.BufferBuilder;
 
-public class BedrockComponentAppearanceTinting extends BedrockComponentBase implements IComponentParticleRender
+public abstract class BedrockComponentAppearanceTinting extends BedrockComponentBase implements IComponentParticleRenderBase
 {
 	public Tint color = new Tint.Solid(MolangParser.ONE, MolangParser.ONE, MolangParser.ONE, MolangParser.ONE);
 
@@ -59,25 +57,6 @@ public class BedrockComponentAppearanceTinting extends BedrockComponentBase impl
 	@Override
 	public void preRender(BedrockEmitter emitter, float partialTicks)
 	{}
-
-	@Override
-	public void render(BedrockEmitter emitter, BedrockParticle particle, IBufferBuilder builder, float partialTicks)
-	{
-		this.renderOnScreen(particle, 0, 0, 0, 0, builder);
-	}
-
-	@Override
-	public void renderOnScreen(BedrockParticle particle, int x, int y, float scale, float partialTicks, IBufferBuilder bufferBuilder)
-	{
-		if (this.color != null)
-		{
-			this.color.compute(particle);
-		}
-		else
-		{
-			particle.r = particle.g = particle.b = particle.a = 1;
-		}
-	}
 
 	@Override
 	public void postRender(BedrockEmitter emitter, float partialTicks)

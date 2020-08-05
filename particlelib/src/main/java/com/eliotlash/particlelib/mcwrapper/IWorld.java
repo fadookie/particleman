@@ -7,7 +7,7 @@ public interface IWorld {
 
     IBlock getBlockAtPos(BlockPos pos);
 
-    int getCombinedLight(BlockPos pos, int i);
+//    int getCombinedLight(BlockPos pos, int i);
 
     List<AxisAlignedBB> getCollisionBoxes(IEntity entityIn, AxisAlignedBB aabb);
 }
