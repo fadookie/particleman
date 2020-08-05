@@ -185,7 +185,9 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 				for (IComponentParticleRenderBase component : renders)
 				{
-					((IComponentParticleRender)component).render(this, particle, builder, partialTicks);
+					if(component instanceof IComponentParticleRender) {
+						((IComponentParticleRender) component).render(this, particle, builder, partialTicks);
+					}
 				}
 			}
 

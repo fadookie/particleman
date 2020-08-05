@@ -82,7 +82,7 @@ public abstract class BedrockSchemeJsonAdapter implements JsonDeserializer<Bedro
 
 		/* Rate */
 		this.components.put("minecraft:emitter_rate_instant", BedrockComponentRateInstant.class);
-//		this.components.put("minecraft:emitter_rate_steady", BedrockComponentRateSteady.class);
+		this.components.put("minecraft:emitter_rate_steady", BedrockComponentRateSteady.class);
 
 		/* Lifetime emitter */
 		this.components.put("minecraft:emitter_lifetime_looping", BedrockComponentLifetimeLooping.class);
