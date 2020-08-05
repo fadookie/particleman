@@ -27,30 +27,9 @@ import java.util.List;
 public class RenderableBedrockEmitter extends BedrockEmitter
 {
 	private World concreteWorld;
-//	public boolean lit;
-//
-//	public boolean added;
-//	public int sanityTicks;
-//	public boolean running = true;
-//	private BedrockParticle guiParticle;
-//
-//	/* Intermediate values */
-//	public Vector3d lastGlobal = new Vector3d();
-//	public Matrix3f rotation = new Matrix3f();
-//
-//	/* Runtime properties */
-//	public int age;
-//	public int lifetime;
-//	public double spawnedParticles;
-//	public boolean playing = true;
-//
-//	public float random1 = (float) Math.random();
-//	public float random2 = (float) Math.random();
-//	public float random3 = (float) Math.random();
-//	public float random4 = (float) Math.random();
-//
+
 	private BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
-//
+
 	/* Camera properties */
 	public int perspective;
 	public float cYaw;

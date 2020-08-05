@@ -25,11 +25,6 @@ import javax.vecmath.Vector4f;
 
 public class RenderableBedrockComponentAppearanceBillboard extends BedrockComponentAppearanceBillboard implements IComponentParticleRender
 {
-	/* Options */
-	public CameraFacing facing = CameraFacing.LOOKAT_XYZ;
-	public int textureWidth = 128;
-	public int textureHeight = 128;
-
 	private Matrix4f transform = new Matrix4f();
 	private Matrix4f rotation = new Matrix4f();
 	private Vector4f[] vertices = new Vector4f[] {
