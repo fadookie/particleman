@@ -1,8 +1,7 @@
-package mchorse.blockbuster.client;
+package com.eliotlash.particleman.client;
 
-import mchorse.blockbuster.Blockbuster;
-import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
-import mchorse.blockbuster.client.particles.emitter.RenderableBedrockEmitter;
+import com.eliotlash.particlelib.Settings;
+import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -73,7 +72,7 @@ public class RenderingHandler
             GlStateManager.disableCull();
             GlStateManager.enableTexture2D();
 
-            if (Blockbuster.particleSorting.get())
+            if (Settings.getParticleSorting())
             {
                 emitters.sort((a, b) ->
                 {

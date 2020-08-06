@@ -1,6 +1,6 @@
 package com.eliotlash.mclib.utils;
 
-import mchorse.mclib.McLib;
+import com.eliotlash.mclib.McLib;
 
 public class PayloadASM
 {

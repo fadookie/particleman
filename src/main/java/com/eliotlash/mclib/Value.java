@@ -1,4 +1,4 @@
-package mchorse.mclib;
+package com.eliotlash.mclib;
 
 public class Value<T> {
     T value;

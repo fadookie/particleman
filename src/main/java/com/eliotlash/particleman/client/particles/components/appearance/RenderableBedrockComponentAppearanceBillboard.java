@@ -1,17 +1,10 @@
-package mchorse.blockbuster.client.particles.components.appearance;
+package com.eliotlash.particleman.client.particles.components.appearance;
 
 import com.eliotlash.particlelib.particles.components.appearance.BedrockComponentAppearanceBillboard;
 import com.eliotlash.particlelib.particles.components.appearance.CameraFacing;
-import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import mchorse.blockbuster.client.particles.components.IComponentParticleRender;
-import mchorse.blockbuster.client.particles.emitter.RenderableBedrockEmitter;
-import com.eliotlash.molang.MolangException;
-import com.eliotlash.molang.MolangParser;
-import com.eliotlash.molang.expressions.MolangExpression;
+import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
+import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import com.eliotlash.mclib.utils.Interpolations;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;

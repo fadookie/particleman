@@ -1,10 +1,8 @@
-package mchorse.blockbuster.client.particles;
+package com.eliotlash.particleman.client.particles;
 
 import com.eliotlash.particlelib.particles.BedrockSchemeJsonAdapter;
-import com.eliotlash.particlelib.particles.components.appearance.BedrockComponentAppearanceTinting;
-import com.eliotlash.particlelib.particles.components.rate.BedrockComponentRateSteady;
-import mchorse.blockbuster.client.particles.components.appearance.RenderableBedrockComponentAppearanceBillboard;
-import mchorse.blockbuster.client.particles.components.appearance.RenderableBedrockComponentAppearanceTinting;
+import com.eliotlash.particleman.client.particles.components.appearance.RenderableBedrockComponentAppearanceBillboard;
+import com.eliotlash.particleman.client.particles.components.appearance.RenderableBedrockComponentAppearanceTinting;
 
 public class RenderableBedrockSchemeJsonAdapter extends BedrockSchemeJsonAdapter {
     public RenderableBedrockSchemeJsonAdapter() {

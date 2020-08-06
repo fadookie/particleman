@@ -1,14 +1,14 @@
-package mchorse.blockbuster.client.particles.emitter;
+package com.eliotlash.particleman.client.particles.emitter;
 
 import com.eliotlash.mclib.mcwrapper.ConversionUtils;
 import com.eliotlash.mclib.mcwrapper.EntityWrapper;
 import com.eliotlash.mclib.mcwrapper.WorldWrapper;
+import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
-import mchorse.blockbuster.Blockbuster;
-import mchorse.blockbuster.client.particles.components.IComponentParticleRender;
-import mchorse.blockbuster.client.textures.GifTexture;
+import com.eliotlash.particleman.client.textures.GifTexture;
+import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
 import com.eliotlash.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -133,7 +133,7 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 		if (!this.particles.isEmpty())
 		{
-			if (Blockbuster.particleSorting.get())
+			if (Settings.getParticleSorting())
 			{
 				this.particles.sort((a, b) ->
 				{

@@ -1,6 +1,4 @@
-package mchorse.mclib;
-
-import net.minecraft.util.math.MathHelper;
+package com.eliotlash.mclib;
 
 /**
  * McLib mod

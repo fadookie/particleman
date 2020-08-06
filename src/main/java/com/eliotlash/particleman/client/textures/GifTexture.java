@@ -1,4 +1,4 @@
-package mchorse.blockbuster.client.textures;
+package com.eliotlash.particleman.client.textures;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

@@ -1,9 +1,8 @@
-package mchorse.blockbuster.client.particles.components;
+package com.eliotlash.particleman.client.particles.components;
 
 import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
-import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
-import mchorse.blockbuster.client.particles.emitter.RenderableBedrockEmitter;
+import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.renderer.BufferBuilder;
 
 public interface IComponentParticleRender extends IComponentParticleRenderBase
