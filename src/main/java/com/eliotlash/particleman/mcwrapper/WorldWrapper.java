@@ -27,11 +27,11 @@ public class WorldWrapper implements IWorld {
     }
 
     @Override
-    public List<AxisAlignedBB> getCollisionBoxes(IEntity entityIn, AxisAlignedBB aabb) {
-        Entity wrappedEntity = ((EntityWrapper)entityIn).entity;
+    public List<AxisAlignedBB> getCollisionBoxes(Size2f size, AxisAlignedBB aabb) {
+        Entity entity = (Entity)size.entity;
         // TODO This could potentially create a lot of garbage depending on how often this method is called - may need
         // to optimize allocations of abstract AABBs using an object pool, or switch to using a mixin interface
-        return world.getCollisionBoxes(wrappedEntity, ConversionUtils.abstractToConcreteAABB(aabb))
+        return world.getCollisionBoxes(entity, ConversionUtils.abstractToConcreteAABB(aabb))
                 .stream()
                 .map(ConversionUtils::concreteToAbstractAABB)
                 .collect(Collectors.toList());

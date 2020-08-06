@@ -2,6 +2,8 @@ package com.eliotlash.particleman.mcwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IBlock;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
+import com.eliotlash.particlelib.mcwrapper.Size2f;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -26,6 +28,10 @@ public class ConversionUtils {
 
     public static com.eliotlash.particlelib.mcwrapper.AxisAlignedBB concreteToAbstractAABB(AxisAlignedBB aabb) {
         return new com.eliotlash.particlelib.mcwrapper.AxisAlignedBB(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
+    }
+
+    public static Size2f entityToSize(Entity entity) {
+        return new Size2f(entity.width, entity.height, entity);
     }
 
     public static IBlock blockLookup(ResourceLocation resourceLocation) {

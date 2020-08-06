@@ -1,7 +1,8 @@
 package com.eliotlash.particleman.client.particles.emitter;
 
+import com.eliotlash.particlelib.mcwrapper.IWorld;
+import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particleman.mcwrapper.ConversionUtils;
-import com.eliotlash.particleman.mcwrapper.EntityWrapper;
 import com.eliotlash.particleman.mcwrapper.WorldWrapper;
 import com.eliotlash.mclib.utils.Interpolations;
 import com.eliotlash.particlelib.Settings;
@@ -62,10 +63,17 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 		return dx * dx + dy * dy + dz * dz;
 	}
 
-	public void setTarget(EntityLivingBase target)
+	public void setTarget(Entity target)
 	{
-		this.target = new EntityWrapper(target);
-		this.concreteWorld = target == null ? null : target.world;
+		this.target = ConversionUtils.entityToSize(target);
+		concreteWorld = target == null ? null : target.world;
+		this.world = concreteWorld == null ? null : new WorldWrapper(concreteWorld);
+	}
+
+	public void setTarget(Size2f size, World world)
+	{
+		target = size;
+		concreteWorld = world;
 		this.world = concreteWorld == null ? null : new WorldWrapper(concreteWorld);
 	}
 

@@ -9,5 +9,5 @@ public interface IWorld {
 
 //    int getCombinedLight(BlockPos pos, int i);
 
-    List<AxisAlignedBB> getCollisionBoxes(IEntity entityIn, AxisAlignedBB aabb);
+    List<AxisAlignedBB> getCollisionBoxes(Size2f entityIn, AxisAlignedBB aabb);
 }

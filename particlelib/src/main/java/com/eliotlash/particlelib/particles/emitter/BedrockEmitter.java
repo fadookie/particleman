@@ -1,7 +1,8 @@
 package com.eliotlash.particlelib.particles.emitter;
 
-import com.eliotlash.particlelib.mcwrapper.IEntity;
+import com.eliotlash.particlelib.mcwrapper.AxisAlignedBB;
 import com.eliotlash.particlelib.mcwrapper.IWorld;
+import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particlelib.particles.components.IComponentParticleInitialize;
 import com.eliotlash.particlelib.particles.components.IComponentParticleUpdate;
 import com.eliotlash.particlelib.particles.BedrockScheme;
@@ -27,7 +28,7 @@ import java.util.Map;
 
 public abstract class BedrockEmitter
 {
-	public IEntity target;
+	public Size2f target;
 	public IWorld world;
 
 	public BedrockScheme scheme;
