@@ -1,4 +1,4 @@
-package com.eliotlash.mclib.mcwrapper;
+package com.eliotlash.particleman.mcwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IBlock;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;

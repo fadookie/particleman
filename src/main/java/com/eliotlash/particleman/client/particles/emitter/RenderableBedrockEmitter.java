@@ -1,8 +1,8 @@
 package com.eliotlash.particleman.client.particles.emitter;
 
-import com.eliotlash.mclib.mcwrapper.ConversionUtils;
-import com.eliotlash.mclib.mcwrapper.EntityWrapper;
-import com.eliotlash.mclib.mcwrapper.WorldWrapper;
+import com.eliotlash.particleman.mcwrapper.ConversionUtils;
+import com.eliotlash.particleman.mcwrapper.EntityWrapper;
+import com.eliotlash.particleman.mcwrapper.WorldWrapper;
 import com.eliotlash.mclib.utils.Interpolations;
 import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;

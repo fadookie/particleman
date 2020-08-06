@@ -1,4 +1,4 @@
-package com.eliotlash.mclib.mcwrapper;
+package com.eliotlash.particleman.mcwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IEntity;
 import com.eliotlash.particlelib.mcwrapper.IWorld;

@@ -1,6 +1,6 @@
 package com.eliotlash.particleman;
 
-import com.eliotlash.mclib.mcwrapper.ConversionUtils;
+import com.eliotlash.particleman.mcwrapper.ConversionUtils;
 import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.particles.BedrockScheme;
 import com.eliotlash.particleman.client.RenderingHandler;

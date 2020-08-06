@@ -1,9 +1,7 @@
-package com.eliotlash.mclib.mcwrapper;
+package com.eliotlash.particleman.mcwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IBlock;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
