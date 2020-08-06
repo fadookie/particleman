@@ -1,11 +1,11 @@
 package com.eliotlash.particleman.client.particles.components.appearance;
 
+import com.eliotlash.mclib.utils.Interpolations;
 import com.eliotlash.particlelib.particles.components.appearance.BedrockComponentAppearanceBillboard;
 import com.eliotlash.particlelib.particles.components.appearance.CameraFacing;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
-import com.eliotlash.mclib.utils.Interpolations;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

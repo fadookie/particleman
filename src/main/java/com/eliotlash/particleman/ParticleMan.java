@@ -19,6 +19,8 @@ public class ParticleMan
     public static final String NAME = "ParticleMan";
     public static final String VERSION = "0.1.0";
 
+    public static int maxPacketSize = 32767; // This is the minimum packet size
+
     private static Logger logger;
 
     @EventHandler
