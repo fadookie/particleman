@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,10 +42,10 @@ public class RenderingHandler
     {}
 
     @SubscribeEvent
-    public void renderPlayer(RenderPlayerEvent.Post event) {
+    public void renderWorldLast(RenderWorldLastEvent event) {
 //        System.out.println("renderPlayer e:" + event);
         GlStateManager.disableLighting();
-        renderParticles(event.getPartialRenderTick());
+        renderParticles(event.getPartialTicks());
         GlStateManager.enableLighting();
     }
 
