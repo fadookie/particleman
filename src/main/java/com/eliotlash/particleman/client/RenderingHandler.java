@@ -1,6 +1,7 @@
 package com.eliotlash.particleman.client;
 
 import com.eliotlash.particlelib.Settings;
+import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -8,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -105,15 +107,29 @@ public class RenderingHandler
         }
     }
 
-    public static void addEmitter(RenderableBedrockEmitter emitter, EntityLivingBase target)
-    {
+    public static void addEmitterGuard(RenderableBedrockEmitter emitter, Runnable targetSetter) {
         if (!emitter.added)
         {
             emitters.add(emitter);
 
             emitter.added = true;
-            emitter.setTarget(target);
+            targetSetter.run();
         }
+    }
+
+    public static void addEmitter(RenderableBedrockEmitter emitter, Entity target)
+    {
+        addEmitterGuard(emitter, () -> emitter.setTarget(target));
+    }
+
+    public static void addEmitter(RenderableBedrockEmitter emitter, Size2f size, World world)
+    {
+        addEmitterGuard(emitter, () -> emitter.setTarget(size, world));
+    }
+
+    public static void addEmitter(RenderableBedrockEmitter emitter, World world)
+    {
+        addEmitterGuard(emitter, () -> emitter.setWorld(world));
     }
 
     public static void updateEmitters()

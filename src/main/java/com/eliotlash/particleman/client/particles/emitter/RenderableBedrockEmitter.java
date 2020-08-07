@@ -66,13 +66,17 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 	public void setTarget(Entity target)
 	{
 		this.target = ConversionUtils.entityToSize(target);
-		concreteWorld = target == null ? null : target.world;
-		this.world = concreteWorld == null ? null : new WorldWrapper(concreteWorld);
+		setWorld(target == null ? null : target.world);
 	}
 
 	public void setTarget(Size2f size, World world)
 	{
 		target = size;
+		setWorld(world);
+	}
+
+	public void setWorld(World world)
+	{
 		concreteWorld = world;
 		this.world = concreteWorld == null ? null : new WorldWrapper(concreteWorld);
 	}

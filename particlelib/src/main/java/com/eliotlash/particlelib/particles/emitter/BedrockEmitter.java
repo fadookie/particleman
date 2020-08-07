@@ -110,6 +110,10 @@ public abstract class BedrockEmitter
 		}
 	}
 
+	public void resetRotation() {
+		rotation.setIdentity();
+	}
+
 	/* Variable related code */
 
 	public void setupVariables()
