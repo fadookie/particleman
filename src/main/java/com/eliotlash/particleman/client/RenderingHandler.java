@@ -41,14 +41,6 @@ public class RenderingHandler
     public static void renderLitParticles(float partialTicks)
     {}
 
-    @SubscribeEvent
-    public void renderWorldLast(RenderWorldLastEvent event) {
-//        System.out.println("renderPlayer e:" + event);
-        GlStateManager.disableLighting();
-        renderParticles(event.getPartialTicks());
-        GlStateManager.enableLighting();
-    }
-
     /**
      * Render particle emitters (called by ASM)
      */
