@@ -44,10 +44,10 @@ public class ModEventBus
             }
 
             // Attach emitter to entity
-            Manager.updateEmitter(playerEmitter, event.player);
+            ParticleHelper.updateEmitter(playerEmitter, event.player);
 
             // Attach emitter to point in space
-            Manager.updateEmitter(pointEmitter, new Vec3d(0, 56, 0), event.player.world);
+            ParticleHelper.updateEmitter(pointEmitter, new Vec3d(0, 56, 0), event.player.world);
              */
         }
     }

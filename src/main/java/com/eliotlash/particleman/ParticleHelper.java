@@ -23,8 +23,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-public class Manager {
-    static BedrockScheme loadScheme(ResourceLocation location) throws IOException {
+public class ParticleHelper {
+    public static BedrockScheme loadScheme(ResourceLocation location) throws IOException {
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         try(
             SimpleResource resource = (SimpleResource) resourceManager.getResource(location);
@@ -37,7 +37,7 @@ public class Manager {
         }
     }
 
-    static void updateEmitter(RenderableBedrockEmitter emitter, EntityLivingBase target) {
+    public static void updateEmitter(RenderableBedrockEmitter emitter, EntityLivingBase target) {
         emitter.update();
         /* Screw interpolation for now */
         emitter.lastGlobal.set(target.posX, target.posY, target.posZ);
@@ -48,7 +48,7 @@ public class Manager {
         RenderingHandler.addEmitter(emitter, target);
     }
 
-    static void updateEmitter(RenderableBedrockEmitter emitter, Vec3d target, World world) {
+    public static void updateEmitter(RenderableBedrockEmitter emitter, Vec3d target, World world) {
         emitter.update();
         /* Screw interpolation for now */
         emitter.lastGlobal.set(target.x, target.y, target.z);
