@@ -1,5 +1,6 @@
 package com.eliotlash.particleman;
 
+import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
 import com.eliotlash.particleman.mcwrapper.ConversionUtils;
 import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.particles.BedrockScheme;
@@ -38,5 +39,6 @@ public class ParticleMan
     static {
         Settings.setBlockLookupImpl(ConversionUtils::blockLookup);
         BedrockScheme.setJsonAdapter(new RenderableBedrockSchemeJsonAdapter());
+        BedrockScheme.setDefaultTexture(new ResourceLocation(MODID, "textures/default_particles.png"));
     }
 }
