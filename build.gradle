@@ -3,6 +3,7 @@ buildscript {
         jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/maven" }
+        mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -11,12 +12,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'maven-publish'
 
-
-version = "1.0"
-group = "com.eliotlash.particleman" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "particleman"
+def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
+version = project.mod_version + "-SNAPSHOT." + buildNumber
+group = project.mod_group
+archivesBaseName = project.archives_base_name
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -39,7 +40,7 @@ minecraft {
     String resolved_core_plugin = mod_core_plugin.replace('${mod_group}', mod_group).replace('${mod_id}', mod_id);
     clientJvmArgs += "-Dfml.coreMods.load=${resolved_core_plugin}"
     serverJvmArgs += "-Dfml.coreMods.load=${resolved_core_plugin}"
-    
+
     clientRunArgs += "--mixin ${mod_mixin_configs}"
     serverRunArgs += "--mixin ${mod_mixin_configs}"
 }
@@ -115,3 +116,26 @@ jar {
         attributes "MixinConfigs": mod_mixin_configs
     }
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+//            artifact packageSources
+//            artifact packageJavadoc
+            artifactId = project.archives_base_name
+        }
+    }
+    repositories {
+        maven {
+            url repsyUrl
+            credentials {
+                def envUsername = System.getenv("repsyUsername")
+                def envPassword = System.getenv("repsyPassword")
+                username = envUsername == null ? findProperty("repsyUsername") : envUsername
+                password = envPassword == null ? findProperty("repsyPassword") : envPassword
+            }
+        }
+    }
+}
+
