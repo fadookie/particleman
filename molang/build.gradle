@@ -10,6 +10,13 @@ plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
 }
+apply plugin: 'maven-publish'
+def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
+version = "SNAPSHOT." + buildNumber
+group = "com.eliotlash.molang"
+def repsyUrl = project.repsyUrl
+project.archivesBaseName
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -29,4 +36,26 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+//            artifact packageSources
+//            artifact packageJavadoc
+            artifactId = archivesBaseName
+        }
+    }
+    repositories {
+        maven {
+            url repsyUrl
+            credentials {
+                def envUsername = System.getenv("repsyUsername")
+                def envPassword = System.getenv("repsyPassword")
+                username = envUsername == null ? findProperty("repsyUsername") : envUsername
+                password = envPassword == null ? findProperty("repsyPassword") : envPassword
+            }
+        }
+    }
 }
