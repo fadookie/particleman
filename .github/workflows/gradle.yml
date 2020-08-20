@@ -37,3 +37,13 @@ jobs:
       env:
         repsyUsername: ${{ secrets.repsyUsername }}
         repsyPassword: ${{ secrets.repsyPassword }}
+    - name: Publish molang to Repsy
+      run: ./gradlew -p molang publish
+      env:
+        repsyUsername: ${{ secrets.repsyUsername }}
+        repsyPassword: ${{ secrets.repsyPassword }}
+    - name: Publish mclib to Repsy
+      run: ./gradlew -p mclib publish
+      env:
+        repsyUsername: ${{ secrets.repsyUsername }}
+        repsyPassword: ${{ secrets.repsyPassword }}
