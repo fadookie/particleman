@@ -11,11 +11,12 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleResource;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-
 import javax.swing.text.html.parser.Entity;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,10 +38,10 @@ public class ParticleHelper {
         }
     }
 
-    public static void updateEmitter(RenderableBedrockEmitter emitter, EntityLivingBase target) {
+    public static void updateEmitter(RenderableBedrockEmitter emitter, LivingEntity target) {
         emitter.update();
         /* Screw interpolation for now */
-        emitter.lastGlobal.set(target.posX, target.posY, target.posZ);
+        emitter.lastGlobal.set(target.getPosX(), target.getPosY(), target.getPosZ());
         /* Sanity ticks is a stupid workaround to see if the emitter's controller
          * is still in the world, when the sanity ticks reaches 2, it stops itself */
         emitter.sanityTicks = 0;
@@ -48,7 +49,7 @@ public class ParticleHelper {
         RenderingHandler.addEmitter(emitter, target);
     }
 
-    public static void updateEmitter(RenderableBedrockEmitter emitter, Vec3d target, World world) {
+    public static void updateEmitter(RenderableBedrockEmitter emitter, Vector3d target, World world) {
         emitter.update();
         /* Screw interpolation for now */
         emitter.lastGlobal.set(target.x, target.y, target.z);

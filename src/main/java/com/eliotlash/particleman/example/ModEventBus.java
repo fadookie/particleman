@@ -6,12 +6,11 @@ import com.eliotlash.particleman.ParticleMan;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 import java.io.IOException;
 
@@ -24,15 +23,14 @@ public class ModEventBus
     public static String debugSchemeName;
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public static void doClientStuff(TickEvent.PlayerTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.START && event.player == Minecraft.getMinecraft().player)
+        if (event.phase == TickEvent.Phase.START && event.player == Minecraft.getInstance().player)
         {
-//            final String testParticleFile = "rainbow";
+            final String testParticleFile = "rainbow";
 //            final String testParticleFile = "loading";
 //            final String testParticleFile = "helix-ish";
-            final String testParticleFile = "loading";
+            //final String testParticleFile = "loading";
 //            final String testParticleFile = "windspren";
 //                final String testParticleFile = "gloryspren-multi";
             if (!testParticleFile.equals(debugSchemeName)) {
@@ -71,7 +69,7 @@ public class ModEventBus
             ParticleHelper.updateEmitter(playerEmitter, event.player);
 
             // Attach emitter to point in space
-            ParticleHelper.updateEmitter(pointEmitter, new Vec3d(0, 56, 0), event.player.world);
+            ParticleHelper.updateEmitter(pointEmitter, new Vector3d(0, 56, 0), event.player.world);
         }
     }
 }

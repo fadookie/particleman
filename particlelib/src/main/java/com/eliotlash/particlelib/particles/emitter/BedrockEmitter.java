@@ -1,30 +1,19 @@
 package com.eliotlash.particlelib.particles.emitter;
 
-import com.eliotlash.particlelib.mcwrapper.AxisAlignedBB;
+import com.eliotlash.mclib.math.IValue;
+import com.eliotlash.mclib.math.Variable;
 import com.eliotlash.particlelib.mcwrapper.IWorld;
 import com.eliotlash.particlelib.mcwrapper.Size2f;
-import com.eliotlash.particlelib.particles.components.IComponentParticleInitialize;
-import com.eliotlash.particlelib.particles.components.IComponentParticleUpdate;
 import com.eliotlash.particlelib.particles.BedrockScheme;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterInitialize;
 import com.eliotlash.particlelib.particles.components.IComponentEmitterUpdate;
-//import mchorse.blockbuster.client.textures.GifTexture;
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.Variable;
-//import net.minecraft.client.renderer.GlStateManager;
-//import net.minecraft.client.renderer.Tessellator;
-//import net.minecraft.entity.Entity;
-//import net.minecraft.entity.EntityLivingBase;
-//import org.lwjgl.opengl.GL11;
+import com.eliotlash.particlelib.particles.components.IComponentParticleInitialize;
+import com.eliotlash.particlelib.particles.components.IComponentParticleUpdate;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BedrockEmitter
 {
@@ -110,7 +99,8 @@ public abstract class BedrockEmitter
 		}
 	}
 
-	public void resetRotation() {
+	public void resetRotation()
+	{
 		rotation.setIdentity();
 	}
 
@@ -135,24 +125,60 @@ public abstract class BedrockEmitter
 
 	public void setParticleVariables(BedrockParticle particle, float partialTicks)
 	{
-		if (this.varAge != null) this.varAge.set(particle.getAge(partialTicks));
-		if (this.varLifetime != null) this.varLifetime.set(particle.lifetime / 20.0);
-		if (this.varRandom1 != null) this.varRandom1.set(particle.random1);
-		if (this.varRandom2 != null) this.varRandom2.set(particle.random2);
-		if (this.varRandom3 != null) this.varRandom3.set(particle.random3);
-		if (this.varRandom4 != null) this.varRandom4.set(particle.random4);
+		if (this.varAge != null)
+		{
+			this.varAge.set(particle.getAge(partialTicks));
+		}
+		if (this.varLifetime != null)
+		{
+			this.varLifetime.set(particle.lifetime / 20.0);
+		}
+		if (this.varRandom1 != null)
+		{
+			this.varRandom1.set(particle.random1);
+		}
+		if (this.varRandom2 != null)
+		{
+			this.varRandom2.set(particle.random2);
+		}
+		if (this.varRandom3 != null)
+		{
+			this.varRandom3.set(particle.random3);
+		}
+		if (this.varRandom4 != null)
+		{
+			this.varRandom4.set(particle.random4);
+		}
 
 		this.scheme.updateCurves();
 	}
 
 	public void setEmitterVariables(float partialTicks)
 	{
-		if (this.varEmitterAge != null) this.varEmitterAge.set(this.getAge(partialTicks));
-		if (this.varEmitterLifetime != null) this.varEmitterLifetime.set(this.lifetime / 20.0);
-		if (this.varEmitterRandom1 != null) this.varEmitterRandom1.set(this.random1);
-		if (this.varEmitterRandom2 != null) this.varEmitterRandom2.set(this.random2);
-		if (this.varEmitterRandom3 != null) this.varEmitterRandom3.set(this.random3);
-		if (this.varEmitterRandom4 != null) this.varEmitterRandom4.set(this.random4);
+		if (this.varEmitterAge != null)
+		{
+			this.varEmitterAge.set(this.getAge(partialTicks));
+		}
+		if (this.varEmitterLifetime != null)
+		{
+			this.varEmitterLifetime.set(this.lifetime / 20.0);
+		}
+		if (this.varEmitterRandom1 != null)
+		{
+			this.varEmitterRandom1.set(this.random1);
+		}
+		if (this.varEmitterRandom2 != null)
+		{
+			this.varEmitterRandom2.set(this.random2);
+		}
+		if (this.varEmitterRandom3 != null)
+		{
+			this.varEmitterRandom3.set(this.random3);
+		}
+		if (this.varEmitterRandom4 != null)
+		{
+			this.varEmitterRandom4.set(this.random4);
+		}
 
 		this.scheme.updateCurves();
 	}
@@ -174,7 +200,8 @@ public abstract class BedrockEmitter
 			this.variables.put(name, this.scheme.parser.parseNoRegister(expression));
 		}
 		catch (Exception e)
-		{}
+		{
+		}
 	}
 
 	public void replaceVariables()
@@ -330,9 +357,13 @@ public abstract class BedrockEmitter
 
 	// Rendering stubs
 	public abstract double getDistanceSq();
+
 	// Cannot add setTarget as it contains Entity
 	public abstract void renderOnScreen(int x, int y, float scale);
+
 	public abstract void render(float partialTicks);
+
 	public abstract void setupCameraProperties(float partialTicks);
+
 	public abstract int getBrightnessForRender(float partialTicks, double x, double y, double z);
 }
