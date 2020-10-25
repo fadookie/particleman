@@ -7,6 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -46,22 +47,20 @@ public class RenderingHandler
     /**
      * Render particle emitters (called by ASM)
      */
-    public static void renderParticles(MatrixStack stack, float partialTicks, TextureManager renderer)
+    public static void renderParticles(MatrixStack stack, ActiveRenderInfo info, float partialTicks, TextureManager renderer)
     {
         RenderSystem.multMatrix(stack.getLast().getMatrix());
 
         if (!emitters.isEmpty())
         {
-            Entity camera = Minecraft.getInstance().getRenderViewEntity();
-            double playerX = camera.prevPosX + (camera.getPosX() - camera.prevPosX) * (double) partialTicks;
-            double playerY = camera.prevPosY + (camera.getPosY() - camera.prevPosY) * (double) partialTicks;
-            double playerZ = camera.prevPosZ + (camera.getPosZ() - camera.prevPosZ) * (double) partialTicks;
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.disableCull();
 
-            stack.translate(-playerX, -playerY, -playerZ);
+            stack = new MatrixStack();
+            stack.translate(-info.getProjectedView().getX(), -info.getProjectedView().getY(), -info.getProjectedView().getZ());
 
             RenderSystem.enableTexture();
 
@@ -87,10 +86,12 @@ public class RenderingHandler
 
             for (RenderableBedrockEmitter emitter : emitters)
             {
-                emitter.render(stack, partialTicks, renderer);
+                emitter.render(stack, info, partialTicks, renderer);
                 emitter.running = emitter.sanityTicks < 2;
             }
+
             RenderSystem.alphaFunc(516, 0.1F);
+            RenderSystem.enableCull();
         }
     }
 

@@ -13,6 +13,7 @@ import com.eliotlash.particleman.client.particles.components.IComponentParticleR
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -33,6 +34,8 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 	private BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
 	/* Camera properties */
+	private ActiveRenderInfo info;
+
 	public PointOfView perspective;
 	public float cYaw;
 	public float cPitch;
@@ -133,14 +136,16 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 	/**
 	 * Render all the particles in this particle emitter
 	 */
-	public void render(MatrixStack stack, float partialTicks, TextureManager renderer)
+	public void render(MatrixStack stack, ActiveRenderInfo info, float partialTicks, TextureManager renderer)
 	{
 		if (this.scheme == null)
 		{
 			return;
 		}
 
+		this.info = info;
 		this.setupCameraProperties(partialTicks);
+		this.info = null;
 
 		BufferBuilder builder = Tessellator.getInstance().getBuffer();
 		List<IComponentParticleRenderBase> renders = this.scheme.particleRender;
@@ -184,8 +189,9 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 				for (IComponentParticleRenderBase component : renders)
 				{
-					if(component instanceof IComponentParticleRender) {
-						((IComponentParticleRender) component).render(stack, this, particle, builder, partialTicks);
+					if(component instanceof IComponentParticleRender)
+					{
+						((IComponentParticleRender) component).render(stack, info, this, particle, builder, partialTicks);
 					}
 				}
 			}
@@ -203,16 +209,21 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 	{
 		if (this.concreteWorld != null)
 		{
-			Entity camera = Minecraft.getInstance().getRenderViewEntity();
-
-
-			boolean thirdPersonReverse = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson();
 			this.perspective = Minecraft.getInstance().gameSettings.func_243230_g();
-			this.cYaw = 180 - Interpolations.lerp(camera.prevRotationYaw, camera.rotationYaw, partialTicks);
-			this.cPitch = 180 - Interpolations.lerp(camera.prevRotationPitch, camera.rotationPitch, partialTicks);
-			this.cX = Interpolations.lerp(camera.prevPosX, camera.getPosX(), partialTicks);
-			this.cY = Interpolations.lerp(camera.prevPosY, camera.getPosY(), partialTicks) + camera.getEyeHeight();
-			this.cZ = Interpolations.lerp(camera.prevPosZ, camera.getPosZ(), partialTicks);
+			this.cYaw = this.info.getYaw();
+			this.cPitch = this.info.getPitch();
+			this.cX = this.info.getProjectedView().getX();
+			this.cY = this.info.getProjectedView().getY();
+			this.cZ = this.info.getProjectedView().getZ();
+
+			if (this.perspective != PointOfView.FIRST_PERSON)
+			{
+				this.cYaw = -this.cYaw;
+			}
+			else
+			{
+				this.cPitch = -this.cPitch;
+			}
 		}
 	}
 

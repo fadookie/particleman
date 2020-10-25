@@ -31,7 +31,7 @@ public class ParticleManagerMixin
 		Vector3d vector3d = renderInfo.getProjectedView();
 		//stack.translate(vector3d.x, vector3d.y, vector3d.z);
 		RenderingHandler.renderLitParticles(partialTicks);
-		RenderingHandler.renderParticles(stack, partialTicks, renderer);
+		RenderingHandler.renderParticles(stack, renderInfo, partialTicks, renderer);
 		RenderSystem.popMatrix();
 	}
 }
