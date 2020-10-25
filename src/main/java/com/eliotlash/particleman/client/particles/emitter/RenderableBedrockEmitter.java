@@ -1,6 +1,5 @@
 package com.eliotlash.particleman.client.particles.emitter;
 
-import com.eliotlash.particlelib.mcwrapper.IWorld;
 import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particleman.mcwrapper.ConversionUtils;
 import com.eliotlash.particleman.mcwrapper.WorldWrapper;
@@ -11,13 +10,15 @@ import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.eliotlash.particleman.client.textures.GifTexture;
 import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -29,10 +30,10 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 {
 	private World concreteWorld;
 
-	private BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
+	private BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
 	/* Camera properties */
-	public int perspective;
+	public PointOfView perspective;
 	public float cYaw;
 	public float cPitch;
 
@@ -92,7 +93,7 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 			return;
 		}
 
-		float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+		float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
 		List<IComponentParticleRender> list = this.scheme.getComponents(IComponentParticleRender.class);
 
 		if (!list.isEmpty())
@@ -100,8 +101,8 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 		    // TODO cache or safe delete
 			GifTexture.bindTexture(ConversionUtils.abstractToConcreteRL(this.scheme.texture));
 
-			GlStateManager.enableBlend();
-			GlStateManager.disableCull();
+			RenderSystem.enableBlend();
+			RenderSystem.disableCull();
 
 			if (this.guiParticle == null || this.guiParticle.dead)
 			{
@@ -118,15 +119,21 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 				render.renderOnScreen(this.guiParticle, x, y, scale, partialTicks);
 			}
 
-			GlStateManager.disableBlend();
-			GlStateManager.enableCull();
+			RenderSystem.disableBlend();
+			RenderSystem.enableCull();
 		}
+	}
+
+	@Override
+	public void render(float partialTicks)
+	{
+
 	}
 
 	/**
 	 * Render all the particles in this particle emitter
 	 */
-	public void render(float partialTicks)
+	public void render(MatrixStack stack, float partialTicks, TextureManager renderer)
 	{
 		if (this.scheme == null)
 		{
@@ -167,7 +174,8 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 			// TODO cache or delete
 			GifTexture.bindTexture(ConversionUtils.abstractToConcreteRL(this.scheme.texture), this.age, partialTicks);
-			builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+			renderer.bindTexture(ConversionUtils.abstractToConcreteRL(this.scheme.texture));
+			builder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
 			for (BedrockParticle particle : this.particles)
 			{
@@ -177,7 +185,7 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 				for (IComponentParticleRenderBase component : renders)
 				{
 					if(component instanceof IComponentParticleRender) {
-						((IComponentParticleRender) component).render(this, particle, builder, partialTicks);
+						((IComponentParticleRender) component).render(stack, this, particle, builder, partialTicks);
 					}
 				}
 			}
@@ -195,14 +203,16 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 	{
 		if (this.concreteWorld != null)
 		{
-			Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
+			Entity camera = Minecraft.getInstance().getRenderViewEntity();
 
-			this.perspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
+
+			boolean thirdPersonReverse = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().isThirdPerson();
+			this.perspective = Minecraft.getInstance().gameSettings.func_243230_g();
 			this.cYaw = 180 - Interpolations.lerp(camera.prevRotationYaw, camera.rotationYaw, partialTicks);
 			this.cPitch = 180 - Interpolations.lerp(camera.prevRotationPitch, camera.rotationPitch, partialTicks);
-			this.cX = Interpolations.lerp(camera.prevPosX, camera.posX, partialTicks);
-			this.cY = Interpolations.lerp(camera.prevPosY, camera.posY, partialTicks) + camera.getEyeHeight();
-			this.cZ = Interpolations.lerp(camera.prevPosZ, camera.posZ, partialTicks);
+			this.cX = Interpolations.lerp(camera.prevPosX, camera.getPosX(), partialTicks);
+			this.cY = Interpolations.lerp(camera.prevPosY, camera.getPosY(), partialTicks) + camera.getEyeHeight();
+			this.cZ = Interpolations.lerp(camera.prevPosZ, camera.getPosZ(), partialTicks);
 		}
 	}
 
@@ -218,6 +228,6 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 		this.blockPos.setPos(x, y, z);
 
-		return this.concreteWorld.isBlockLoaded(this.blockPos) ? this.concreteWorld.getCombinedLight(this.blockPos, 0) : 0;
+		return this.concreteWorld.isBlockLoaded(this.blockPos) ? this.concreteWorld.getLightSubtracted(this.blockPos, 0) : 0;
 	}
 }

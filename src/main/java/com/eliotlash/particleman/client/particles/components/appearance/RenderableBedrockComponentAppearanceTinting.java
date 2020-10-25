@@ -4,13 +4,14 @@ import com.eliotlash.particlelib.particles.components.appearance.BedrockComponen
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
 
 public class RenderableBedrockComponentAppearanceTinting extends BedrockComponentAppearanceTinting implements IComponentParticleRender
 {
 	/* Interface implementations */
 	@Override
-	public void render(RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
+	public void render(MatrixStack stack, RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
 	{
 		this.renderOnScreen(particle, 0, 0, 0, 0);
 	}

@@ -1,14 +1,14 @@
 package com.eliotlash.particleman.client;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4f;
 import java.nio.FloatBuffer;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MatrixUtils
 {
     /**
@@ -32,7 +32,9 @@ public class MatrixUtils
     public static Matrix4f readModelView(Matrix4f matrix4f)
     {
         buffer.clear();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+
+        //todo i mightve broke this
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX);
         buffer.get(floats);
 
         matrix4f.set(floats);
@@ -51,7 +53,7 @@ public class MatrixUtils
         buffer.clear();
         buffer.put(floats);
         buffer.rewind();
-        GL11.glLoadMatrix(buffer);
+        GL11.glLoadMatrixf(buffer);
     }
 
     /**

@@ -6,9 +6,11 @@ import com.eliotlash.particlelib.particles.components.appearance.CameraFacing;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -33,7 +35,7 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 	}
 
 	@Override
-	public void render(RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
+	public void render(MatrixStack stack, RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
 	{
 		this.calculateUVs(particle, partialTicks);
 
@@ -66,12 +68,12 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 		boolean lookAt = this.facing == CameraFacing.LOOKAT_XYZ || this.facing == CameraFacing.LOOKAT_Y;
 
 		/* Flip width when frontal perspective mode */
-		if (emitter.perspective == 2)
+		if (emitter.perspective == PointOfView.THIRD_PERSON_FRONT)
 		{
 			this.w = -this.w;
 		}
 		/* In GUI renderer */
-		else if (emitter.perspective == 100 && !lookAt)
+		else if (emitter.perspective == PointOfView.FIRST_PERSON && !lookAt)
 		{
 			entityYaw = 180 - entityYaw;
 
@@ -127,10 +129,20 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 		float v1 = this.v1 / (float) this.textureHeight;
 		float v2 = this.v2 / (float) this.textureHeight;
 
-		builder.pos(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z).tex(u1, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z).tex(u2, v1).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z).tex(u2, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
-		builder.pos(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z).tex(u1, v2).lightmap(lightX, lightY).color(particle.r, particle.g, particle.b, particle.a).endVertex();
+		net.minecraft.util.math.vector.Matrix4f matrix4f = stack.getLast().getMatrix();
+		net.minecraft.util.math.vector.Vector4f vec0 = new net.minecraft.util.math.vector.Vector4f(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z, 1);
+		net.minecraft.util.math.vector.Vector4f vec1 = new net.minecraft.util.math.vector.Vector4f(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z, 1);
+		net.minecraft.util.math.vector.Vector4f vec2 = new net.minecraft.util.math.vector.Vector4f(this.vertices[2].x, this.vertices[2].y, this.vertices[2].z, 1);
+		net.minecraft.util.math.vector.Vector4f vec3 = new net.minecraft.util.math.vector.Vector4f(this.vertices[3].x, this.vertices[3].y, this.vertices[3].z, 1);
+
+		vec0.transform(matrix4f);
+		vec1.transform(matrix4f);
+		vec2.transform(matrix4f);
+		vec3.transform(matrix4f);
+		builder.pos(vec0.getX(), vec0.getY(), vec0.getZ()).tex(u1, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
+		builder.pos(vec1.getX(), vec1.getY(), vec1.getZ()).tex(u2, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
+		builder.pos(vec2.getX(), vec2.getY(), vec2.getZ()).tex(u2, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
+		builder.pos(vec3.getX(), vec3.getY(), vec3.getZ()).tex(u1, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
 	}
 
 	@Override

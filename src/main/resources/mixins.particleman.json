@@ -1,9 +1,10 @@
 {
-  "compatibilityLevel": "JAVA_8",
+  "required": true,
   "package": "com.eliotlash.particleman.mixin",
-  "mixins": [],
-  "client": [
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "modid.refmap.json",
+  "mixins": [
     "ParticleManagerMixin"
   ],
-  "server": []
+  "minVersion": "0.8"
 }

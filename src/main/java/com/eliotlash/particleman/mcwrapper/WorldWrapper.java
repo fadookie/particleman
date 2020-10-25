@@ -31,8 +31,7 @@ public class WorldWrapper implements IWorld {
         Entity entity = (Entity)size.entity;
         // TODO This could potentially create a lot of garbage depending on how often this method is called - may need
         // to optimize allocations of abstract AABBs using an object pool, or switch to using a mixin interface
-        return world.getCollisionBoxes(entity, ConversionUtils.abstractToConcreteAABB(aabb))
-                .stream()
+        return world.getCollisionShapes(entity, ConversionUtils.abstractToConcreteAABB(aabb))
                 .map(ConversionUtils::concreteToAbstractAABB)
                 .collect(Collectors.toList());
     }

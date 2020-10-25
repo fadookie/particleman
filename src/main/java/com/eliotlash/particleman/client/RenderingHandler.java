@@ -3,18 +3,20 @@ package com.eliotlash.particleman.client;
 import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +28,7 @@ import java.util.List;
  * This handler is another handler in this mod that responsible for rendering.
  * Currently this handler only renders recording overlay
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderingHandler
 {
     /**
@@ -44,28 +46,24 @@ public class RenderingHandler
     /**
      * Render particle emitters (called by ASM)
      */
-    public static void renderParticles(float partialTicks)
+    public static void renderParticles(MatrixStack stack, float partialTicks, TextureManager renderer)
     {
+        RenderSystem.multMatrix(stack.getLast().getMatrix());
+
         if (!emitters.isEmpty())
         {
-            Entity camera = Minecraft.getMinecraft().getRenderViewEntity();
-            double playerX = camera.prevPosX + (camera.posX - camera.prevPosX) * (double) partialTicks;
-            double playerY = camera.prevPosY + (camera.posY - camera.prevPosY) * (double) partialTicks;
-            double playerZ = camera.prevPosZ + (camera.posZ - camera.prevPosZ) * (double) partialTicks;
+            Entity camera = Minecraft.getInstance().getRenderViewEntity();
+            double playerX = camera.prevPosX + (camera.getPosX() - camera.prevPosX) * (double) partialTicks;
+            double playerY = camera.prevPosY + (camera.getPosY() - camera.prevPosY) * (double) partialTicks;
+            double playerZ = camera.prevPosZ + (camera.getPosZ() - camera.prevPosZ) * (double) partialTicks;
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            GlStateManager.enableBlend();
-            GlStateManager.enableAlpha();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateManager.alphaFunc(516, 0.003921569F);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            BufferBuilder builder = Tessellator.getInstance().getBuffer();
+            stack.translate(-playerX, -playerY, -playerZ);
 
-            GlStateManager.disableTexture2D();
-
-            builder.setTranslation(-playerX, -playerY, -playerZ);
-
-            GlStateManager.disableCull();
-            GlStateManager.enableTexture2D();
+            RenderSystem.enableTexture();
 
             if (Settings.getParticleSorting())
             {
@@ -89,14 +87,10 @@ public class RenderingHandler
 
             for (RenderableBedrockEmitter emitter : emitters)
             {
-                emitter.render(partialTicks);
+                emitter.render(stack, partialTicks, renderer);
                 emitter.running = emitter.sanityTicks < 2;
             }
-
-            builder.setTranslation(0, 0, 0);
-
-            GlStateManager.disableBlend();
-            GlStateManager.alphaFunc(516, 0.1F);
+            RenderSystem.alphaFunc(516, 0.1F);
         }
     }
 

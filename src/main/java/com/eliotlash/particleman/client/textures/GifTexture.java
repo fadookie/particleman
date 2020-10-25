@@ -5,18 +5,17 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.texture.ITickable;
+import net.minecraft.client.renderer.texture.Texture;
+import net.minecraft.resources.IResourceManager;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.ITickableTextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
-public class GifTexture extends AbstractTexture implements ITickableTextureObject
+public class GifTexture extends Texture implements ITickable
 {
     public ResourceLocation texture;
     public List<GifElement> elements = new ArrayList<GifElement>();
@@ -33,16 +32,16 @@ public class GifTexture extends AbstractTexture implements ITickableTextureObjec
 
     public static void bindTexture(ResourceLocation location, int ticks)
     {
-        bindTexture(location, ticks, Minecraft.getMinecraft().getRenderPartialTicks());
+        bindTexture(location, ticks, Minecraft.getInstance().getRenderPartialTicks());
     }
 
     public static void bindTexture(ResourceLocation location, int ticks, float partialTicks)
     {
-        TextureManager textures = Minecraft.getMinecraft().renderEngine;
+        TextureManager textures = Minecraft.getInstance().textureManager;
 
-        if (location.getResourcePath().endsWith("gif"))
+        if (location.getPath().endsWith("gif"))
         {
-            ITextureObject object = textures.getTexture(location);
+            Texture object = textures.getTexture(location);
 
             if (object instanceof GifTexture)
             {
@@ -54,7 +53,7 @@ public class GifTexture extends AbstractTexture implements ITickableTextureObjec
                     texture.calculateIndex(ticks, partialTicks);
                 }
 
-                GlStateManager.bindTexture(object.getGlTextureId());
+                RenderSystem.bindTexture(object.getGlTextureId());
 
                 if (ticks >= 0)
                 {
@@ -95,7 +94,7 @@ public class GifTexture extends AbstractTexture implements ITickableTextureObjec
     @Override
     public void tick()
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         /* No point to cause NPE xD */
         if (mc.player == null)
