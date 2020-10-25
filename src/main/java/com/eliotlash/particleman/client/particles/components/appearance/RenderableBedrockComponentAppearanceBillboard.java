@@ -7,7 +7,9 @@ import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 import com.eliotlash.particleman.client.particles.components.IComponentParticleRender;
 import com.eliotlash.particleman.client.particles.emitter.RenderableBedrockEmitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
@@ -35,7 +37,7 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 	}
 
 	@Override
-	public void render(MatrixStack stack, RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
+	public void render(MatrixStack stack, ActiveRenderInfo info, RenderableBedrockEmitter emitter, BedrockParticle particle, BufferBuilder builder, float partialTicks)
 	{
 		this.calculateUVs(particle, partialTicks);
 
@@ -94,8 +96,6 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 
 		/* Calculate the geometry for billboards using cool matrix math */
 		int light = emitter.getBrightnessForRender(partialTicks, px, py, pz);
-		int lightX = light >> 16 & 65535;
-		int lightY = light & 65535;
 
 		this.vertices[0].set(-this.w / 2, -this.h / 2, 0, 1);
 		this.vertices[1].set(this.w / 2, -this.h / 2, 0, 1);
@@ -110,14 +110,14 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 			this.rotation.rotX(entityPitch / 180 * (float) Math.PI);
 			this.transform.mul(this.rotation);
 		}
-		else if (this.facing == CameraFacing.ROTATE_Y || this.facing == CameraFacing.LOOKAT_Y) {
+		else if (this.facing == CameraFacing.ROTATE_Y || this.facing == CameraFacing.LOOKAT_Y)
+		{
 			this.rotation.rotY(entityYaw / 180 * (float) Math.PI);
 			this.transform.mul(this.rotation);
 		}
 
 		this.rotation.rotZ(angle / 180 * (float) Math.PI);
 		this.transform.mul(this.rotation);
-		this.transform.setTranslation(new Vector3f((float) px, (float) py, (float) pz));
 
 		for (Vector4f vertex : this.vertices)
 		{
@@ -129,6 +129,9 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 		float v1 = this.v1 / (float) this.textureHeight;
 		float v2 = this.v2 / (float) this.textureHeight;
 
+		stack.push();
+		stack.translate(px, py, pz);
+
 		net.minecraft.util.math.vector.Matrix4f matrix4f = stack.getLast().getMatrix();
 		net.minecraft.util.math.vector.Vector4f vec0 = new net.minecraft.util.math.vector.Vector4f(this.vertices[0].x, this.vertices[0].y, this.vertices[0].z, 1);
 		net.minecraft.util.math.vector.Vector4f vec1 = new net.minecraft.util.math.vector.Vector4f(this.vertices[1].x, this.vertices[1].y, this.vertices[1].z, 1);
@@ -139,10 +142,13 @@ public class RenderableBedrockComponentAppearanceBillboard extends BedrockCompon
 		vec1.transform(matrix4f);
 		vec2.transform(matrix4f);
 		vec3.transform(matrix4f);
-		builder.pos(vec0.getX(), vec0.getY(), vec0.getZ()).tex(u1, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
-		builder.pos(vec1.getX(), vec1.getY(), vec1.getZ()).tex(u2, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
-		builder.pos(vec2.getX(), vec2.getY(), vec2.getZ()).tex(u2, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
-		builder.pos(vec3.getX(), vec3.getY(), vec3.getZ()).tex(u1, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(0).endVertex();
+
+		builder.pos(vec0.getX(), vec0.getY(), vec0.getZ()).tex(u1, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(light).endVertex();
+		builder.pos(vec1.getX(), vec1.getY(), vec1.getZ()).tex(u2, v1).color(particle.r, particle.g, particle.b, particle.a).lightmap(light).endVertex();
+		builder.pos(vec2.getX(), vec2.getY(), vec2.getZ()).tex(u2, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(light).endVertex();
+		builder.pos(vec3.getX(), vec3.getY(), vec3.getZ()).tex(u1, v2).color(particle.r, particle.g, particle.b, particle.a).lightmap(light).endVertex();
+
+		stack.pop();
 	}
 
 	@Override
