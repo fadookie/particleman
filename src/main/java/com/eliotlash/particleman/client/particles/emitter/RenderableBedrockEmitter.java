@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
@@ -143,6 +144,13 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 			return;
 		}
 
+		if (!this.lit)
+		{
+			RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE2);
+			RenderSystem.enableTexture();
+			RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+		}
+
 		this.info = info;
 		this.setupCameraProperties(partialTicks);
 		this.info = null;
@@ -203,6 +211,13 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 		{
 			component.postRender(this, partialTicks);
 		}
+
+		if (!this.lit)
+		{
+			RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE2);
+			RenderSystem.disableTexture();
+			RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+		}
 	}
 
 	public void setupCameraProperties(float partialTicks)
@@ -239,6 +254,6 @@ public class RenderableBedrockEmitter extends BedrockEmitter
 
 		this.blockPos.setPos(x, y, z);
 
-		return this.concreteWorld.isBlockLoaded(this.blockPos) ? this.concreteWorld.getLightSubtracted(this.blockPos, 0) : 0;
+		return this.concreteWorld.isBlockLoaded(this.blockPos) ? WorldRenderer.getCombinedLight(this.concreteWorld, this.blockPos) : 0;
 	}
 }
