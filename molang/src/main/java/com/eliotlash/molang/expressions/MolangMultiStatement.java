@@ -1,14 +1,18 @@
 package com.eliotlash.molang.expressions;
 
+import com.eliotlash.mclib.math.Variable;
 import com.eliotlash.molang.MolangParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class MolangMultiStatement extends MolangExpression
 {
 	public List<MolangExpression> expressions = new ArrayList<MolangExpression>();
+	public Map<String, Variable> locals = new HashMap<String, Variable>();
 
 	public MolangMultiStatement(MolangParser context)
 	{
@@ -36,6 +40,11 @@ public class MolangMultiStatement extends MolangExpression
 		for (MolangExpression expression : this.expressions)
 		{
 			builder.add(expression.toString());
+
+			if (expression instanceof MolangValue && ((MolangValue) expression).returns)
+			{
+				break;
+			}
 		}
 
 		return builder.toString();
