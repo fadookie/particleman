@@ -1,5 +1,6 @@
 package com.eliotlash.particlelib.particles;
 
+import com.eliotlash.mclib.math.Variable;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -62,7 +63,7 @@ public class BedrockScheme
 	private boolean factory;
 
 	/* MoLang integration */
-	public MolangParser parser = new MolangParser();
+	public MolangParser parser;
 
 	public static BedrockScheme parse(String json)
 	{
@@ -86,6 +87,25 @@ public class BedrockScheme
 	public static BedrockScheme dupe(BedrockScheme scheme)
 	{
 		return parse(toJson(scheme));
+	}
+
+	public BedrockScheme()
+	{
+		this.parser = new MolangParser();
+
+		/* Default variables */
+		this.parser.register(new Variable("variable.particle_age", 0));
+		this.parser.register(new Variable("variable.particle_lifetime", 0));
+		this.parser.register(new Variable("variable.particle_random_1", 0));
+		this.parser.register(new Variable("variable.particle_random_2", 0));
+		this.parser.register(new Variable("variable.particle_random_3", 0));
+		this.parser.register(new Variable("variable.particle_random_4", 0));
+		this.parser.register(new Variable("variable.emitter_age", 0));
+		this.parser.register(new Variable("variable.emitter_lifetime", 0));
+		this.parser.register(new Variable("variable.emitter_random_1", 0));
+		this.parser.register(new Variable("variable.emitter_random_2", 0));
+		this.parser.register(new Variable("variable.emitter_random_3", 0));
+		this.parser.register(new Variable("variable.emitter_random_4", 0));
 	}
 
 	public BedrockScheme factory(boolean factory)
