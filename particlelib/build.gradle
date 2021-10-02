@@ -10,6 +10,16 @@ plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
 }
+apply plugin: 'maven-publish'
+def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
+version = "SNAPSHOT." + buildNumber
+group = "com.eliotlash.particlelib"
+def repsyUrl = project.repsyUrl
+project.archivesBaseName
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
 
 repositories {
     // Use jcenter for resolving dependencies.
@@ -36,4 +46,26 @@ dependencies {
 test {
     // Use junit platform for unit tests
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+//            artifact packageSources
+//            artifact packageJavadoc
+            artifactId = archivesBaseName
+        }
+    }
+    repositories {
+        maven {
+            url repsyUrl
+            credentials {
+                def envUsername = System.getenv("repsyUsername")
+                def envPassword = System.getenv("repsyPassword")
+                username = envUsername == null ? findProperty("repsyUsername") : envUsername
+                password = envPassword == null ? findProperty("repsyPassword") : envPassword
+            }
+        }
+    }
 }
