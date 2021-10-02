@@ -47,3 +47,8 @@ jobs:
       env:
         repsyUsername: ${{ secrets.repsyUsername }}
         repsyPassword: ${{ secrets.repsyPassword }}
+    - name: Publish particlelib to Repsy
+      run: ./gradlew -p particlelib publish
+      env:
+        repsyUsername: ${{ secrets.repsyUsername }}
+        repsyPassword: ${{ secrets.repsyPassword }}
