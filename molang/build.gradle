@@ -12,9 +12,8 @@ plugins {
 }
 apply plugin: 'maven-publish'
 def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
-version = "SNAPSHOT." + buildNumber
+version = "18"
 group = "com.eliotlash.molang"
-def repsyUrl = project.repsyUrl
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 dependencies {
@@ -51,7 +50,6 @@ publishing {
 	      name = "cloudsmith"
 	      url = "https://maven.cloudsmith.io/geckolib3/geckolib/"
 	      def releasesRepoUrl = "https://maven.cloudsmith.io/geckolib3/geckolib/"
-	      def snapshotsRepoUrl = "https://maven.cloudsmith.io/geckolib3/geckolib/"
 	      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 	      credentials {
                 def envUsername = System.getenv("cloudUsername")

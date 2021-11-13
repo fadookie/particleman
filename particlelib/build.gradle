@@ -12,9 +12,8 @@ plugins {
 }
 apply plugin: 'maven-publish'
 def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
-version = "SNAPSHOT." + buildNumber
+version = "18"
 group = "com.eliotlash.particlelib"
-def repsyUrl = project.repsyUrl
 project.archivesBaseName
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {

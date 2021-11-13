@@ -15,7 +15,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
 def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GITHUB_RUN_NUMBER") : "0";
-version = project.mod_version + "-SNAPSHOT." + buildNumber
+version = project.mod_version + "-18"
 group = project.mod_group
 archivesBaseName = project.archives_base_name
 
