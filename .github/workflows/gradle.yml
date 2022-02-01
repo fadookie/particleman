@@ -36,7 +36,7 @@ jobs:
       if: ${{ always() }}
       run: |
         set -x
-        find . -path '*build/reports/tests' -type d -exec echo zip -r 'reports.zip' {} +
+        find . -path '*build/reports/tests' -type d -exec zip -r 'reports.zip' {} +
     - name: Upload Test Results
       uses: actions/upload-artifact@v2
       if: ${{ always() }}
