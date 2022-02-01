@@ -7,8 +7,6 @@
  * in the user guide at https://docs.gradle.org/4.8.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'particleman'
-include ':mclib', ':molang', ':particlelib'
+rootProject.name = 'molang'
+include ':mclib'
 project(':mclib').projectDir = new File('./mclib')
-project(':molang').projectDir = new File('./molang')
-project(':particlelib').projectDir = new File('./particlelib')
