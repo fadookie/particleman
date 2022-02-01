@@ -32,6 +32,17 @@ jobs:
       env:
         repsyUsername: ${{ secrets.repsyUsername }}
         repsyPassword: ${{ secrets.repsyPassword }}
+    - name: Zip Test Results
+      if: ${{ always() }}
+      run: |
+        set -x
+        find . -path '*build/reports/tests' -type d -exec echo zip -r 'reports.zip' {} +
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: reports.zip
+        path: reports.zip
     - name: Publish Snapshot to Repsy
       run: ./gradlew --info publish
       env:
