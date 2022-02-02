@@ -15,7 +15,7 @@ def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GI
 version = "SNAPSHOT." + buildNumber
 group = "com.eliotlash.molang"
 def repsyUrl = project.repsyUrl
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.

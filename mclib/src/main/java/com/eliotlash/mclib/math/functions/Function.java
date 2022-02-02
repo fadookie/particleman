@@ -12,14 +12,14 @@ public abstract class Function implements IValue {
 	protected IValue[] args;
 	protected String name;
 
-	public Function(IValue[] values, String name) throws Exception {
-		if (values.length < this.getRequiredArguments()) {
-			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", this.getName(), this.getRequiredArguments(), values.length);
+	public Function(IValue[] args, String name) throws Exception {
+		if (args.length < this.getRequiredArguments()) {
+			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", this.getName(), this.getRequiredArguments(), args.length);
 
 			throw new Exception(message);
 		}
 
-		this.args = values;
+		this.args = args;
 		this.name = name;
 	}
 
@@ -36,13 +36,13 @@ public abstract class Function implements IValue {
 
 	@Override
 	public String toString() {
-		String args = "";
+		StringBuilder args = new StringBuilder();
 
 		for (int i = 0; i < this.args.length; i++) {
-			args += this.args[i].toString();
+			args.append(this.args[i].toString());
 
 			if (i < this.args.length - 1) {
-				args += ", ";
+				args.append(", ");
 			}
 		}
 

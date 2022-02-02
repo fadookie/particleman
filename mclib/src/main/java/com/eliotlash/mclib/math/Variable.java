@@ -11,7 +11,7 @@ package com.eliotlash.mclib.math;
  * method to modify it.
  */
 public class Variable implements IValue {
-	private String name;
+	private final String name;
 	private double value;
 
 	public Variable(String name, double value) {

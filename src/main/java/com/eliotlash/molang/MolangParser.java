@@ -7,10 +7,7 @@ import com.eliotlash.mclib.math.Constant;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.mclib.math.MathBuilder;
 import com.eliotlash.mclib.math.Variable;
-import com.eliotlash.molang.expressions.MolangAssignment;
-import com.eliotlash.molang.expressions.MolangExpression;
-import com.eliotlash.molang.expressions.MolangMultiStatement;
-import com.eliotlash.molang.expressions.MolangValue;
+import com.eliotlash.molang.expressions.*;
 import com.eliotlash.molang.functions.CosDegrees;
 import com.eliotlash.molang.functions.SinDegrees;
 import com.google.gson.JsonElement;
@@ -24,8 +21,8 @@ import com.google.gson.JsonPrimitive;
  * @link https://bedrock.dev/1.14.0.0/1.14.2.50/MoLang
  */
 public class MolangParser extends MathBuilder {
-	public static final MolangExpression ZERO = new MolangValue(null, new Constant(0));
-	public static final MolangExpression ONE = new MolangValue(null, new Constant(1));
+	public static final MolangExpression ZERO = new MolangValue(new Constant(0));
+	public static final MolangExpression ONE = new MolangValue(new Constant(1));
 	public static final String RETURN = "return ";
 
 	private MolangMultiStatement currentStatement;
@@ -34,8 +31,8 @@ public class MolangParser extends MathBuilder {
 		super();
 
 		/* Replace radian based sin and cos with degreebased */
-		this.functions.put("cos", CosDegrees.class);
-		this.functions.put("sin", SinDegrees.class);
+		this.functions.put("cos", CosDegrees::new);
+		this.functions.put("sin", SinDegrees::new);
 
 		/* Remap functions to be in tact with Molang specification */
 		this.remap("abs", "math.abs");
@@ -99,13 +96,13 @@ public class MolangParser extends MathBuilder {
 
 			if (primitive.isString()) {
 				try {
-					return new MolangValue(this, new Constant(Float.parseFloat(primitive.getAsString())));
+					return new MolangValue(new Constant(Float.parseFloat(primitive.getAsString())));
 				} catch (Exception e) {
 				}
 
 				return this.parseExpression(primitive.getAsString());
 			} else {
-				return new MolangValue(this, new Constant(primitive.getAsDouble()));
+				return new MolangValue(new Constant(primitive.getAsDouble()));
 			}
 		}
 
@@ -116,7 +113,7 @@ public class MolangParser extends MathBuilder {
 	 * Parse a molang expression
 	 */
 	public MolangExpression parseExpression(String expression) throws MolangException {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		for (String split : expression.toLowerCase().trim().split(";")) {
 			if (!split.trim().isEmpty()) {
@@ -128,7 +125,7 @@ public class MolangParser extends MathBuilder {
 			throw new MolangException("Molang expression cannot be blank!");
 		}
 
-		MolangMultiStatement result = new MolangMultiStatement(this);
+		MolangMultiStatement result = new MolangMultiStatement();
 
 		this.currentStatement = result;
 
@@ -155,7 +152,7 @@ public class MolangParser extends MathBuilder {
 
 		if (expression.startsWith(RETURN)) {
 			try {
-				return new MolangValue(this, this.parse(expression.substring(RETURN.length()))).addReturn();
+				return new ReturnStatement(this.parse(expression.substring(RETURN.length())));
 			} catch (Exception e) {
 				throw new MolangException("Couldn't parse return '" + expression + "' expression!");
 			}
@@ -179,10 +176,10 @@ public class MolangParser extends MathBuilder {
 					variable = this.getVariable(name);
 				}
 
-				return new MolangAssignment(this, variable, this.parseSymbolsMolang(symbols));
+				return new MolangAssignment(variable, this.parseSymbolsMolang(symbols));
 			}
 
-			return new MolangValue(this, this.parseSymbolsMolang(symbols));
+			return new MolangValue(this.parseSymbolsMolang(symbols));
 		} catch (Exception e) {
 			throw new MolangException("Couldn't parse '" + expression + "' expression!");
 		}

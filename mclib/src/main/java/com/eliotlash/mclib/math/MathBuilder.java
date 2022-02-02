@@ -1,12 +1,12 @@
 package com.eliotlash.mclib.math;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-import com.eliotlash.mclib.math.functions.Function;
+import com.eliotlash.mclib.math.functions.FunctionFactory;
 import com.eliotlash.mclib.math.functions.classic.*;
 import com.eliotlash.mclib.math.functions.limit.Clamp;
 import com.eliotlash.mclib.math.functions.limit.Max;
@@ -38,43 +38,48 @@ public class MathBuilder {
 	 * Named variables that can be used in math expression by this
 	 * builder
 	 */
-	public Map<String, Variable> variables = new HashMap<String, Variable>();
+	public Map<String, Variable> variables = new HashMap<>();
+
+	/**
+	 * Known, constant values that can be used in expressions.
+	 */
+	public Map<String, Constant> constants = new HashMap<>();
 
 	/**
 	 * Map of functions which can be used in the math expressions
 	 */
-	public Map<String, Class<? extends Function>> functions = new HashMap<String, Class<? extends Function>>();
+	public Map<String, FunctionFactory> functions = new HashMap<>();
 
 	public MathBuilder() {
 		/* Some default values */
-		this.register(new Variable("PI", Math.PI));
-		this.register(new Variable("E", Math.E));
+		this.registerConstant("PI", Math.PI);
+		this.registerConstant("E", Math.E);
 
 		/* Rounding functions */
-		this.functions.put("floor", Floor.class);
-		this.functions.put("round", Round.class);
-		this.functions.put("ceil", Ceil.class);
-		this.functions.put("trunc", Trunc.class);
+		this.functions.put("floor", Floor::new);
+		this.functions.put("round", Round::new);
+		this.functions.put("ceil", Ceil::new);
+		this.functions.put("trunc", Trunc::new);
 
 		/* Selection and limit functions */
-		this.functions.put("clamp", Clamp.class);
-		this.functions.put("max", Max.class);
-		this.functions.put("min", Min.class);
+		this.functions.put("clamp", Clamp::new);
+		this.functions.put("max", Max::new);
+		this.functions.put("min", Min::new);
 
 		/* Classical functions */
-		this.functions.put("abs", Abs.class);
-		this.functions.put("cos", Cos.class);
-		this.functions.put("sin", Sin.class);
-		this.functions.put("exp", Exp.class);
-		this.functions.put("ln", Ln.class);
-		this.functions.put("sqrt", Sqrt.class);
-		this.functions.put("mod", Mod.class);
-		this.functions.put("pow", Pow.class);
+		this.functions.put("abs", Abs::new);
+		this.functions.put("cos", Cos::new);
+		this.functions.put("sin", Sin::new);
+		this.functions.put("exp", Exp::new);
+		this.functions.put("ln", Ln::new);
+		this.functions.put("sqrt", Sqrt::new);
+		this.functions.put("mod", Mod::new);
+		this.functions.put("pow", Pow::new);
 
 		/* Utility functions */
-		this.functions.put("lerp", Lerp.class);
-		this.functions.put("lerprotate", LerpRotate.class);
-		this.functions.put("random", Random.class);
+		this.functions.put("lerp", Lerp::new);
+		this.functions.put("lerprotate", LerpRotate::new);
+		this.functions.put("random", Random::new);
 	}
 
 	/**
@@ -82,6 +87,10 @@ public class MathBuilder {
 	 */
 	public void register(Variable variable) {
 		this.variables.put(variable.getName(), variable);
+	}
+
+	public void registerConstant(String name, double value) {
+		this.constants.put(name, new Constant(value));
 	}
 
 	/**
@@ -97,7 +106,7 @@ public class MathBuilder {
 	 */
 	public String[] breakdown(String expression) throws Exception {
 		/* If given string have illegal characters, then it can't be parsed */
-		if (!expression.matches("^[\\w\\d\\s_+-/*%^&|<>=!?:.,()]+$")) {
+		if (!containsOnlyAllowedCharacters(expression)) {
 			throw new Exception("Given expression '" + expression + "' contains illegal characters!");
 		}
 
@@ -129,7 +138,7 @@ public class MathBuilder {
 	 * Breakdown characters into a list of math expression symbols.
 	 */
 	public List<Object> breakdownChars(String[] chars) {
-		List<Object> symbols = new ArrayList<Object>();
+		List<Object> symbols = new ArrayList<>();
 		String buffer = "";
 		int len = chars.length;
 
@@ -398,8 +407,8 @@ public class MathBuilder {
 			throw new Exception("Function '" + first + "' couldn't be found!");
 		}
 
-		List<IValue> values = new ArrayList<IValue>();
-		List<Object> buffer = new ArrayList<Object>();
+		List<IValue> values = new ArrayList<>();
+		List<Object> buffer = new ArrayList<>();
 
 		for (Object o : args) {
 			if (o.equals(",")) {
@@ -414,11 +423,7 @@ public class MathBuilder {
 			values.add(this.parseSymbols(buffer));
 		}
 
-		Class<? extends Function> function = this.functions.get(first);
-		Constructor<? extends Function> ctor = function.getConstructor(IValue[].class, String.class);
-		Function func = ctor.newInstance(values.toArray(new IValue[values.size()]), first);
-
-		return func;
+		return this.functions.get(first).create(values.toArray(new IValue[0]), first);
 	}
 
 	/**
@@ -444,13 +449,13 @@ public class MathBuilder {
 				/* Need to account for a negative value variable */
 				if (symbol.startsWith("-")) {
 					symbol = symbol.substring(1);
-					Variable value = this.getVariable(symbol);
+					var value = this.getValue(symbol);
 
 					if (value != null) {
 						return new Negative(value);
 					}
 				} else {
-					IValue value = this.getVariable(symbol);
+					var value = this.getValue(symbol);
 
 					/* Avoid NPE */
 					if (value != null) {
@@ -463,6 +468,21 @@ public class MathBuilder {
 		}
 
 		throw new Exception("Given object couldn't be converted to value! " + object);
+	}
+
+	/**
+	 * Get either a variable or a compile-time constant.
+	 * @param name Name of the variable or constant.
+	 * @return Value of the variable or constant.
+	 */
+	protected IValue getValue(String name) {
+		var out = getVariable(name);
+
+		if (out == null) {
+			return this.constants.get(name);
+		} else {
+			return out;
+		}
 	}
 
 	/**
@@ -503,11 +523,19 @@ public class MathBuilder {
 		return Operation.OPERATORS.contains(s) || s.equals("?") || s.equals(":");
 	}
 
+	private static final Pattern DECIMAL = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+
 	/**
 	 * Whether string is numeric (including whether it's a floating
 	 * number)
 	 */
 	protected boolean isDecimal(String s) {
-		return s.matches("^-?\\d+(\\.\\d+)?$");
+		return DECIMAL.matcher(s).matches();
+	}
+
+	private static final Pattern SEQUENTIAL_ALLOWED_CHARACTERS = Pattern.compile("^[\\w\\d\\s_+-/*%^&|<>=!?:.,()]+$");
+
+	protected boolean containsOnlyAllowedCharacters(String expression) {
+		return SEQUENTIAL_ALLOWED_CHARACTERS.matcher(expression).matches();
 	}
 }

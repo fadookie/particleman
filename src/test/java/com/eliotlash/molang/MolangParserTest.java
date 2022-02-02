@@ -48,6 +48,20 @@ class MolangParserTest {
 	}
 
 	@Test
+	void parseComplexExpression() throws MolangException {
+		MolangExpression mulAdd = parser.parseOneLine("2 + 2 * 2");
+		MolangExpression addMul = parser.parseOneLine("(2 + 2) * 2");
+		assertEquals(6.0, mulAdd.get());
+		assertEquals(8.0, addMul.get());
+	}
+
+	@Test
+	void parseWadoosExpr() throws MolangException {
+		MolangExpression expr = parser.parseOneLine("1 + math.sin(-90) * 0.02");
+		assertEquals(0.98, expr.get());
+	}
+
+	@Test
 	void isOperator() {
 		assertTrue(parser.isOperator("+"));
 		assertTrue(parser.isOperator("-"));

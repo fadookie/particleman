@@ -12,5 +12,5 @@ public interface IValue {
 	/**
 	 * Get computed or stored value
 	 */
-	public double get();
+	double get();
 }

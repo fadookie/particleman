@@ -6,12 +6,8 @@ import com.eliotlash.mclib.math.Variable;
 import com.eliotlash.molang.MolangParser;
 
 public class MolangMultiStatement extends MolangExpression {
-	public List<MolangExpression> expressions = new ArrayList<MolangExpression>();
-	public Map<String, Variable> locals = new HashMap<String, Variable>();
-
-	public MolangMultiStatement(MolangParser context) {
-		super(context);
-	}
+	public List<MolangExpression> expressions = new ArrayList<>();
+	public Map<String, Variable> locals = new HashMap<>();
 
 	@Override
 	public double get() {
@@ -31,7 +27,7 @@ public class MolangMultiStatement extends MolangExpression {
 		for (MolangExpression expression : this.expressions) {
 			builder.add(expression.toString());
 
-			if (expression instanceof MolangValue && ((MolangValue) expression).returns) {
+			if (expression instanceof ReturnStatement) {
 				break;
 			}
 		}

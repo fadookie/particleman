@@ -8,9 +8,7 @@ public class MolangAssignment extends MolangExpression {
 	public Variable variable;
 	public IValue expression;
 
-	public MolangAssignment(MolangParser context, Variable variable, IValue expression) {
-		super(context);
-
+	public MolangAssignment(Variable variable, IValue expression) {
 		this.variable = variable;
 		this.expression = expression;
 	}

@@ -8,18 +8,9 @@ import com.google.gson.JsonPrimitive;
 
 public class MolangValue extends MolangExpression {
 	public IValue value;
-	public boolean returns;
 
-	public MolangValue(MolangParser context, IValue value) {
-		super(context);
-
+	public MolangValue(IValue value) {
 		this.value = value;
-	}
-
-	public MolangExpression addReturn() {
-		this.returns = true;
-
-		return this;
 	}
 
 	@Override
@@ -29,7 +20,7 @@ public class MolangValue extends MolangExpression {
 
 	@Override
 	public String toString() {
-		return (this.returns ? MolangParser.RETURN : "") + this.value.toString();
+		return this.value.toString();
 	}
 
 	@Override

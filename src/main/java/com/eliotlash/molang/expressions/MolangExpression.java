@@ -3,12 +3,10 @@ package com.eliotlash.molang.expressions;
 import com.eliotlash.mclib.math.Constant;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.mclib.math.Operation;
-import com.eliotlash.molang.MolangParser;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 public abstract class MolangExpression implements IValue {
-	public MolangParser context;
 
 	public static boolean isZero(MolangExpression expression) {
 		return isConstant(expression, 0);
@@ -19,8 +17,7 @@ public abstract class MolangExpression implements IValue {
 	}
 
 	public static boolean isConstant(MolangExpression expression, double x) {
-		if (expression instanceof MolangValue) {
-			MolangValue value = (MolangValue) expression;
+		if (expression instanceof MolangValue value) {
 
 			return value.value instanceof Constant && Operation.equals(value.value.get(), x);
 		}
@@ -29,17 +26,12 @@ public abstract class MolangExpression implements IValue {
 	}
 
 	public static boolean isExpressionConstant(MolangExpression expression) {
-		if (expression instanceof MolangValue) {
-			MolangValue value = (MolangValue) expression;
+		if (expression instanceof MolangValue value) {
 
 			return value.value instanceof Constant;
 		}
 
 		return false;
-	}
-
-	public MolangExpression(MolangParser context) {
-		this.context = context;
 	}
 
 	public JsonElement toJson() {
