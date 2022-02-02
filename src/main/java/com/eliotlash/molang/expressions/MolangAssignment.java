@@ -1,16 +1,14 @@
 package com.eliotlash.molang.expressions;
 
-import com.eliotlash.molang.MolangParser;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.mclib.math.Variable;
+import com.eliotlash.molang.MolangParser;
 
-public class MolangAssignment extends MolangExpression
-{
+public class MolangAssignment extends MolangExpression {
 	public Variable variable;
 	public IValue expression;
 
-	public MolangAssignment(MolangParser context, Variable variable, IValue expression)
-	{
+	public MolangAssignment(MolangParser context, Variable variable, IValue expression) {
 		super(context);
 
 		this.variable = variable;
@@ -18,8 +16,7 @@ public class MolangAssignment extends MolangExpression
 	}
 
 	@Override
-	public double get()
-	{
+	public double get() {
 		double value = this.expression.get();
 
 		this.variable.set(value);
@@ -28,8 +25,7 @@ public class MolangAssignment extends MolangExpression
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return this.variable.getName() + " = " + this.expression.toString();
 	}
 }

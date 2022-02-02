@@ -1,32 +1,25 @@
 package com.eliotlash.molang.expressions;
 
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.Operation;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.eliotlash.molang.MolangParser;
 import com.eliotlash.mclib.math.Constant;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.mclib.math.Operation;
+import com.eliotlash.molang.MolangParser;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
-public abstract class MolangExpression implements IValue
-{
+public abstract class MolangExpression implements IValue {
 	public MolangParser context;
 
-	public static boolean isZero(MolangExpression expression)
-	{
+	public static boolean isZero(MolangExpression expression) {
 		return isConstant(expression, 0);
 	}
 
-	public static boolean isOne(MolangExpression expression)
-	{
+	public static boolean isOne(MolangExpression expression) {
 		return isConstant(expression, 1);
 	}
 
-	public static boolean isConstant(MolangExpression expression, double x)
-	{
-		if (expression instanceof MolangValue)
-		{
+	public static boolean isConstant(MolangExpression expression, double x) {
+		if (expression instanceof MolangValue) {
 			MolangValue value = (MolangValue) expression;
 
 			return value.value instanceof Constant && Operation.equals(value.value.get(), x);
@@ -35,10 +28,8 @@ public abstract class MolangExpression implements IValue
 		return false;
 	}
 
-	public static boolean isExpressionConstant(MolangExpression expression)
-	{
-		if (expression instanceof MolangValue)
-		{
+	public static boolean isExpressionConstant(MolangExpression expression) {
+		if (expression instanceof MolangValue) {
 			MolangValue value = (MolangValue) expression;
 
 			return value.value instanceof Constant;
@@ -47,13 +38,11 @@ public abstract class MolangExpression implements IValue
 		return false;
 	}
 
-	public MolangExpression(MolangParser context)
-	{
+	public MolangExpression(MolangParser context) {
 		this.context = context;
 	}
 
-	public JsonElement toJson()
-	{
+	public JsonElement toJson() {
 		return new JsonPrimitive(this.toString());
 	}
 }

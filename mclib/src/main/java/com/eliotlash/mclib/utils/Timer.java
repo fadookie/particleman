@@ -1,63 +1,51 @@
 package com.eliotlash.mclib.utils;
 
-public class Timer
-{
+public class Timer {
 	public boolean enabled;
 	public long time;
 	public long duration;
 
-	public Timer(long duration)
-	{
+	public Timer(long duration) {
 		this.duration = duration;
 	}
 
-	public long getRemaining()
-	{
+	public long getRemaining() {
 		return this.time - System.currentTimeMillis();
 	}
 
-	public void mark()
-	{
+	public void mark() {
 		this.mark(this.duration);
 	}
 
-	public void mark(long duration)
-	{
+	public void mark(long duration) {
 		this.enabled = true;
 		this.time = System.currentTimeMillis() + duration;
 	}
 
-	public void reset()
-	{
+	public void reset() {
 		this.enabled = false;
 	}
 
-	public boolean checkReset()
-	{
+	public boolean checkReset() {
 		boolean enabled = this.check();
 
-		if (enabled)
-		{
+		if (enabled) {
 			this.reset();
 		}
 
 		return enabled;
 	}
 
-	public boolean check()
-	{
+	public boolean check() {
 		return this.enabled && this.isTime();
 	}
 
-	public boolean isTime()
-	{
+	public boolean isTime() {
 		return System.currentTimeMillis() >= this.time;
 	}
 
-	public boolean checkRepeat()
-	{
-		if (!this.enabled)
-		{
+	public boolean checkRepeat() {
+		if (!this.enabled) {
 			this.mark();
 		}
 
