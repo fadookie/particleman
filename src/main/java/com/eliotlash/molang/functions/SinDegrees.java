@@ -1,7 +1,7 @@
 package com.eliotlash.molang.functions;
 
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.functions.Function;
+import com.eliotlash.molang.math.IValue;
+import com.eliotlash.molang.math.functions.Function;
 
 public class SinDegrees extends Function {
 	public SinDegrees(IValue[] values, String name) throws Exception {

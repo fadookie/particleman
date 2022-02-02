@@ -8,5 +8,3 @@
  */
 
 rootProject.name = 'molang'
-include ':mclib'
-project(':mclib').projectDir = new File('./mclib')

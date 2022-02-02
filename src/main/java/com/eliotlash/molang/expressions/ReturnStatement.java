@@ -1,6 +1,6 @@
 package com.eliotlash.molang.expressions;
 
-import com.eliotlash.mclib.math.IValue;
+import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.MolangParser;
 
 public class ReturnStatement extends MolangValue {

@@ -1,8 +1,8 @@
 package com.eliotlash.molang.expressions;
 
-import com.eliotlash.mclib.math.Constant;
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.Operation;
+import com.eliotlash.molang.math.Constant;
+import com.eliotlash.molang.math.IValue;
+import com.eliotlash.molang.math.Operation;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 

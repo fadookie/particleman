@@ -1,20 +1,20 @@
-package com.eliotlash.molang.functions;
+package com.eliotlash.molang.math.functions.classic;
 
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
-public class CosDegrees extends Function {
-	public CosDegrees(IValue[] values, String name) throws Exception {
+public class Pow extends Function {
+	public Pow(IValue[] values, String name) throws Exception {
 		super(values, name);
 	}
 
 	@Override
 	public int getRequiredArguments() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public double get() {
-		return Math.cos(this.getArg(0) / 180 * Math.PI);
+		return Math.pow(this.getArg(0), this.getArg(1));
 	}
 }

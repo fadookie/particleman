@@ -2,8 +2,7 @@ package com.eliotlash.molang.expressions;
 
 import java.util.*;
 
-import com.eliotlash.mclib.math.Variable;
-import com.eliotlash.molang.MolangParser;
+import com.eliotlash.molang.math.Variable;
 
 public class MolangMultiStatement extends MolangExpression {
 	public List<MolangExpression> expressions = new ArrayList<>();

@@ -1,8 +1,7 @@
 package com.eliotlash.molang.expressions;
 
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.Variable;
-import com.eliotlash.molang.MolangParser;
+import com.eliotlash.molang.math.IValue;
+import com.eliotlash.molang.math.Variable;
 
 public class MolangAssignment extends MolangExpression {
 	public Variable variable;

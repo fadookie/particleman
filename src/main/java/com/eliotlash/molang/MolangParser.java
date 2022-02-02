@@ -3,10 +3,10 @@ package com.eliotlash.molang;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.eliotlash.mclib.math.Constant;
-import com.eliotlash.mclib.math.IValue;
-import com.eliotlash.mclib.math.MathBuilder;
-import com.eliotlash.mclib.math.Variable;
+import com.eliotlash.molang.math.Constant;
+import com.eliotlash.molang.math.IValue;
+import com.eliotlash.molang.math.MathBuilder;
+import com.eliotlash.molang.math.Variable;
 import com.eliotlash.molang.expressions.*;
 import com.eliotlash.molang.functions.CosDegrees;
 import com.eliotlash.molang.functions.SinDegrees;
