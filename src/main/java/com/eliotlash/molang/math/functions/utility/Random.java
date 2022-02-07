@@ -37,4 +37,9 @@ public class Random extends Function {
 
 		return random;
 	}
+
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
 }

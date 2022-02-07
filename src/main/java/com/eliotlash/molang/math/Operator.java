@@ -26,4 +26,9 @@ public class Operator implements IValue {
 	public String toString() {
 		return a.toString() + " " + this.operation.sign + " " + b.toString();
 	}
+
+	@Override
+	public boolean isConstant() {
+		return a.isConstant() && b.isConstant();
+	}
 }

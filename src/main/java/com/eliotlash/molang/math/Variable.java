@@ -39,4 +39,9 @@ public class Variable implements IValue {
 	public String toString() {
 		return this.name;
 	}
+
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
 }

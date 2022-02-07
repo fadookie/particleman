@@ -1,5 +1,7 @@
 package com.eliotlash.molang.math.functions;
 
+import java.util.Arrays;
+
 import com.eliotlash.molang.math.IValue;
 
 /**
@@ -14,7 +16,7 @@ public abstract class Function implements IValue {
 
 	public Function(IValue[] args, String name) throws Exception {
 		if (args.length < this.getRequiredArguments()) {
-			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", this.getName(), this.getRequiredArguments(), args.length);
+			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", name, this.getRequiredArguments(), args.length);
 
 			throw new Exception(message);
 		}
@@ -61,5 +63,10 @@ public abstract class Function implements IValue {
 	 */
 	public int getRequiredArguments() {
 		return 0;
+	}
+
+	@Override
+	public boolean isConstant() {
+		return Arrays.stream(args).allMatch(IValue::isConstant);
 	}
 }

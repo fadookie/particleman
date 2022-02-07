@@ -34,6 +34,11 @@ public abstract class MolangExpression implements IValue {
 		return false;
 	}
 
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
+
 	public JsonElement toJson() {
 		return new JsonPrimitive(this.toString());
 	}

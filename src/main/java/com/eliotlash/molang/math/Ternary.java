@@ -26,4 +26,9 @@ public class Ternary implements IValue {
 	public String toString() {
 		return this.condition.toString() + " ? " + this.ifTrue.toString() + " : " + this.ifFalse.toString();
 	}
+
+	@Override
+	public boolean isConstant() {
+		return condition.isConstant() && ifTrue.isConstant() && ifFalse.isConstant();
+	}
 }

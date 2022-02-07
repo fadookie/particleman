@@ -25,4 +25,9 @@ public class Constant implements IValue {
 	public String toString() {
 		return String.valueOf(this.value);
 	}
+
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
 }

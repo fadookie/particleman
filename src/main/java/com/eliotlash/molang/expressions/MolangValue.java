@@ -31,4 +31,9 @@ public class MolangValue extends MolangExpression {
 
 		return super.toJson();
 	}
+
+	@Override
+	public boolean isConstant() {
+		return value.isConstant();
+	}
 }

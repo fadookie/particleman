@@ -22,4 +22,9 @@ public class Group implements IValue {
 	public String toString() {
 		return "(" + this.value.toString() + ")";
 	}
+
+	@Override
+	public boolean isConstant() {
+		return this.value.isConstant();
+	}
 }

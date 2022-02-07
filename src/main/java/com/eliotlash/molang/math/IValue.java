@@ -13,4 +13,6 @@ public interface IValue {
 	 * Get computed or stored value
 	 */
 	double get();
+
+	boolean isConstant();
 }

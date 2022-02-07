@@ -15,6 +15,34 @@ class MathBuilderTest {
 	}
 
 	@Test
+	void testConstant() throws Exception {
+		assertConstant("PI");
+		assertConstant("E");
+		assertConstant("500");
+		assertConstant("sqrt(2)");
+		assertConstant("floor(2.5)");
+		assertConstant("round(2.5)");
+		assertConstant("ceil(2.5)");
+		assertConstant("trunc(2.5)");
+		assertConstant("clamp(10, 0, 1)");
+		assertConstant("max(1, 2)");
+		assertConstant("min(1, 2)");
+		assertConstant("abs(-20)");
+		assertConstant("cos(-20)");
+		assertConstant("sin(60)");
+		assertConstant("exp(5)");
+		assertConstant("ln(E)");
+		assertConstant("mod(10, 3)");
+		assertConstant("pow(20, 2)");
+	}
+
+	@Test
+	void testNotConstant() throws Exception {
+		assertNotConstant("random()");
+		assertNotConstant("sin(random())");
+	}
+
+	@Test
 	void testTrig() throws Exception {
 		assertEquals(1.0, evaluate("sin(PI/2)"), 0.0001);
 		assertEquals(0.0, evaluate("sin(0)"), 0.0001);
@@ -69,5 +97,13 @@ class MathBuilderTest {
 
 	private double evaluate(String expression) throws Exception {
 		return mathBuilder.parse(expression).get();
+	}
+
+	private void assertConstant(String expression) throws Exception {
+		assertTrue(mathBuilder.parse(expression).isConstant());
+	}
+
+	private void assertNotConstant(String expression) throws Exception {
+		assertFalse(mathBuilder.parse(expression).isConstant());
 	}
 }
