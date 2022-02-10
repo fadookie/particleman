@@ -10,7 +10,6 @@ import com.eliotlash.molang.math.functions.FunctionFactory;
 
 import com.eliotlash.molang.math.functions.classic.*;
 
-import com.eliotlash.molang.math.functions.classic.*;
 import com.eliotlash.molang.math.functions.limit.Clamp;
 import com.eliotlash.molang.math.functions.limit.Max;
 import com.eliotlash.molang.math.functions.limit.Min;
@@ -226,7 +225,7 @@ public class MathBuilder {
 	 * This function is the most important part of this class. It's
 	 * responsible for turning list of symbols into {@link IValue}. This
 	 * is done by constructing a binary tree-like {@link IValue} based on
-	 * {@link Operator} class.
+	 * {@link BinaryOperation} class.
 	 * <p>
 	 * However, beside parsing operations, it's also can return one or
 	 * two item sized symbol lists.
@@ -264,37 +263,37 @@ public class MathBuilder {
 			int leftOp = this.seekLastOperator(symbols, op - 1);
 
 			if (leftOp != -1) {
-				Operation left = this.operationForOperator((String) symbols.get(leftOp));
-				Operation right = this.operationForOperator((String) symbols.get(op));
+				Operator left = this.operationForOperator((String) symbols.get(leftOp));
+				Operator right = this.operationForOperator((String) symbols.get(op));
 
-				if (right.value > left.value) {
+				if (right.precedence > left.precedence) {
 					IValue leftValue = this.parseSymbols(symbols.subList(0, leftOp));
 					IValue rightValue = this.parseSymbols(symbols.subList(leftOp + 1, size));
 
-					return new Operator(left, leftValue, rightValue);
-				} else if (left.value > right.value) {
-					Operation initial = this.operationForOperator((String) symbols.get(lastOp));
+					return new BinaryOperation(left, leftValue, rightValue);
+				} else if (left.precedence > right.precedence) {
+					Operator initial = this.operationForOperator((String) symbols.get(lastOp));
 
-					if (initial.value < left.value) {
+					if (initial.precedence < left.precedence) {
 						IValue leftValue = this.parseSymbols(symbols.subList(0, lastOp));
 						IValue rightValue = this.parseSymbols(symbols.subList(lastOp + 1, size));
 
-						return new Operator(initial, leftValue, rightValue);
+						return new BinaryOperation(initial, leftValue, rightValue);
 					}
 
 					IValue leftValue = this.parseSymbols(symbols.subList(0, op));
 					IValue rightValue = this.parseSymbols(symbols.subList(op + 1, size));
 
-					return new Operator(right, leftValue, rightValue);
+					return new BinaryOperation(right, leftValue, rightValue);
 				}
 			}
 
 			op = leftOp;
 		}
 
-		Operation operation = this.operationForOperator((String) symbols.get(lastOp));
+		Operator operator = this.operationForOperator((String) symbols.get(lastOp));
 
-		return new Operator(operation, this.parseSymbols(symbols.subList(0, lastOp)), this.parseSymbols(symbols.subList(lastOp + 1, size)));
+		return new BinaryOperation(operator, this.parseSymbols(symbols.subList(0, lastOp)), this.parseSymbols(symbols.subList(lastOp + 1, size)));
 	}
 
 	protected int seekLastOperator(List<Object> symbols) {
@@ -497,14 +496,13 @@ public class MathBuilder {
 	/**
 	 * Get operation for given operator strings
 	 */
-	protected Operation operationForOperator(String op) throws Exception {
-		for (Operation operation : Operation.values()) {
-			if (operation.sign.equals(op)) {
-				return operation;
-			}
-		}
+	protected Operator operationForOperator(String op) throws Exception {
+		Operator out = Operator.fromString(op);
 
-		throw new Exception("There is no such operator '" + op + "'!");
+		if (out == null)
+			throw new Exception("There is no such operator '" + op + "'!");
+
+		return out;
 	}
 
 	/**
@@ -522,7 +520,7 @@ public class MathBuilder {
 	 * Whether string is an operator
 	 */
 	protected boolean isOperator(String s) {
-		return Operation.OPERATORS.contains(s) || s.equals("?") || s.equals(":");
+		return Operator.isOperator(s) || s.equals("?") || s.equals(":");
 	}
 
 	private static final Pattern DECIMAL = Pattern.compile("^-?\\d+(\\.\\d+)?$");
