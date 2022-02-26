@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.classic;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -14,7 +15,7 @@ public class Sqrt extends Function {
 	}
 
 	@Override
-	public double get() {
-		return Math.sqrt(this.getArg(0));
+	public double evaluate(ExecutionContext ctx) {
+		return Math.sqrt(this.evaluateArgument(ctx, 0));
 	}
 }

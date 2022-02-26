@@ -2,18 +2,22 @@ package com.eliotlash.molang.expressions;
 
 import java.util.*;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.Variable;
 
 public class MolangMultiStatement extends MolangExpression {
 	public List<MolangExpression> expressions = new ArrayList<>();
-	public Map<String, Variable> locals = new HashMap<>();
 
 	@Override
-	public double get() {
+	public double evaluate(ExecutionContext ctx) {
 		double value = 0;
 
 		for (MolangExpression expression : this.expressions) {
-			value = expression.get();
+			value = expression.evaluate(ctx);
+
+			if (expression instanceof ReturnStatement) {
+				break;
+			}
 		}
 
 		return value;

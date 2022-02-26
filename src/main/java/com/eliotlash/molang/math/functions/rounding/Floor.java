@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.rounding;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -14,7 +15,7 @@ public class Floor extends Function {
 	}
 
 	@Override
-	public double get() {
-		return Math.floor(this.getArg(0));
+	public double evaluate(ExecutionContext ctx) {
+		return Math.floor(this.evaluateArgument(ctx, 0));
 	}
 }

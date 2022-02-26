@@ -1,5 +1,6 @@
 package com.eliotlash.molang.expressions;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.Constant;
 import com.eliotlash.molang.math.IValue;
 
@@ -14,8 +15,8 @@ public class MolangValue extends MolangExpression {
 	}
 
 	@Override
-	public double get() {
-		return this.value.get();
+	public double evaluate(ExecutionContext ctx) {
+		return this.value.evaluate(ctx);
 	}
 
 	@Override
@@ -25,8 +26,8 @@ public class MolangValue extends MolangExpression {
 
 	@Override
 	public JsonElement toJson() {
-		if (this.value instanceof Constant) {
-			return new JsonPrimitive(this.value.get());
+		if (this.value instanceof Constant c) {
+			return new JsonPrimitive(c.value());
 		}
 
 		return super.toJson();

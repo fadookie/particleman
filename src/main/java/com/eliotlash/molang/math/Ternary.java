@@ -1,5 +1,7 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Ternary operator class
  * <p>
@@ -7,9 +9,9 @@ package com.eliotlash.molang.math;
  * given condition value
  */
 public class Ternary implements IValue {
-	public IValue condition;
-	public IValue ifTrue;
-	public IValue ifFalse;
+	public final IValue condition;
+	public final IValue ifTrue;
+	public final IValue ifFalse;
 
 	public Ternary(IValue condition, IValue ifTrue, IValue ifFalse) {
 		this.condition = condition;
@@ -18,8 +20,8 @@ public class Ternary implements IValue {
 	}
 
 	@Override
-	public double get() {
-		return this.condition.get() != 0 ? this.ifTrue.get() : this.ifFalse.get();
+	public double evaluate(ExecutionContext ctx) {
+		return this.condition.evaluate(ctx) != 0 ? this.ifTrue.evaluate(ctx) : this.ifFalse.evaluate(ctx);
 	}
 
 	@Override

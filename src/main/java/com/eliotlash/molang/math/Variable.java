@@ -1,5 +1,7 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Variable class
  * <p>
@@ -10,25 +12,11 @@ package com.eliotlash.molang.math;
  * But in practice, it's simply returns stored value and provides a
  * method to modify it.
  */
-public class Variable implements IValue {
-	private final String name;
-	private double value;
-
-	public Variable(String name, double value) {
-		this.name = name;
-		this.value = value;
-	}
-
-	/**
-	 * Set the value of this variable
-	 */
-	public void set(double value) {
-		this.value = value;
-	}
+public record Variable(String name) implements IValue {
 
 	@Override
-	public double get() {
-		return this.value;
+	public double evaluate(ExecutionContext ctx) {
+		return 0;
 	}
 
 	public String getName() {

@@ -1,5 +1,6 @@
 package com.eliotlash.molang.expressions;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.Variable;
 
@@ -13,10 +14,10 @@ public class MolangAssignment extends MolangExpression {
 	}
 
 	@Override
-	public double get() {
-		double value = this.expression.get();
+	public double evaluate(ExecutionContext ctx) {
+		double value = this.expression.evaluate(ctx);
 
-		this.variable.set(value);
+
 
 		return value;
 	}

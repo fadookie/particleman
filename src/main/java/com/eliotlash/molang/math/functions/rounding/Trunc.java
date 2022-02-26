@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.rounding;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -14,8 +15,8 @@ public class Trunc extends Function {
 	}
 
 	@Override
-	public double get() {
-		double value = this.getArg(0);
+	public double evaluate(ExecutionContext ctx) {
+		double value = this.evaluateArgument(ctx, 0);
 
 		return value < 0 ? Math.ceil(value) : Math.floor(value);
 	}

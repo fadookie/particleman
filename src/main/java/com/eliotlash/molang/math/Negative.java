@@ -1,25 +1,22 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Negative operator class
  * <p>
  * This class is responsible for inverting given value
  */
-public class Negative implements IValue {
-	public IValue value;
-
-	public Negative(IValue value) {
-		this.value = value;
-	}
+public record Negative(IValue value) implements IValue {
 
 	@Override
-	public double get() {
-		return -this.value.get();
+	public double evaluate(ExecutionContext ctx) {
+		return -this.value.evaluate(ctx);
 	}
 
 	@Override
 	public String toString() {
-		return "-(" + this.value.toString() + ")";
+		return "-" + this.value.toString();
 	}
 
 	@Override

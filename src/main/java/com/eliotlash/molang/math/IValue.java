@@ -1,5 +1,7 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Math value interface
  * <p>
@@ -11,8 +13,9 @@ package com.eliotlash.molang.math;
 public interface IValue {
 	/**
 	 * Get computed or stored value
+	 * @param ctx
 	 */
-	double get();
+	double evaluate(ExecutionContext ctx);
 
 	boolean isConstant();
 }

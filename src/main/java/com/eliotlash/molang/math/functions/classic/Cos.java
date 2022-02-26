@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.classic;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -14,7 +15,7 @@ public class Cos extends Function {
 	}
 
 	@Override
-	public double get() {
-		return Math.cos(this.getArg(0));
+	public double evaluate(ExecutionContext ctx) {
+		return Math.cos(this.evaluateArgument(ctx, 0));
 	}
 }

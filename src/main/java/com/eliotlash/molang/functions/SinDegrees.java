@@ -1,5 +1,6 @@
 package com.eliotlash.molang.functions;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -14,7 +15,7 @@ public class SinDegrees extends Function {
 	}
 
 	@Override
-	public double get() {
-		return Math.sin(this.getArg(0) / 180 * Math.PI);
+	public double evaluate(ExecutionContext ctx) {
+		return Math.sin(this.evaluateArgument(ctx, 0) / 180 * Math.PI);
 	}
 }

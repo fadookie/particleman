@@ -2,48 +2,49 @@ package com.eliotlash.molang.math.functions;
 
 import java.util.Arrays;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 
 /**
  * Abstract function class
  * <p>
  * This class provides function capability (i.e. giving it arguments and
- * upon {@link #get()} method you receive output).
+ * upon {@link IValue#evaluate(ExecutionContext)} method you receive output).
  */
 public abstract class Function implements IValue {
-	protected IValue[] args;
+	protected IValue[] arguments;
 	protected String name;
 
-	public Function(IValue[] args, String name) throws Exception {
-		if (args.length < this.getRequiredArguments()) {
-			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", name, this.getRequiredArguments(), args.length);
+	public Function(IValue[] arguments, String name) throws Exception {
+		if (arguments.length < this.getRequiredArguments()) {
+			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", name, this.getRequiredArguments(), arguments.length);
 
 			throw new Exception(message);
 		}
 
-		this.args = args;
+		this.arguments = arguments;
 		this.name = name;
 	}
 
 	/**
 	 * Get the value of nth argument
 	 */
-	public double getArg(int index) {
-		if (index < 0 || index >= this.args.length) {
+	public double evaluateArgument(ExecutionContext ctx, int index) {
+		if (index < 0 || index >= this.arguments.length) {
 			return 0;
 		}
 
-		return this.args[index].get();
+		return this.arguments[index].evaluate(ctx);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder args = new StringBuilder();
 
-		for (int i = 0; i < this.args.length; i++) {
-			args.append(this.args[i].toString());
+		for (int i = 0; i < this.arguments.length; i++) {
+			args.append(this.arguments[i].toString());
 
-			if (i < this.args.length - 1) {
+			if (i < this.arguments.length - 1) {
 				args.append(", ");
 			}
 		}
@@ -67,6 +68,6 @@ public abstract class Function implements IValue {
 
 	@Override
 	public boolean isConstant() {
-		return Arrays.stream(args).allMatch(IValue::isConstant);
+		return Arrays.stream(arguments).allMatch(IValue::isConstant);
 	}
 }

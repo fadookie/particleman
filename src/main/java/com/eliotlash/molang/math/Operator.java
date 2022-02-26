@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.eliotlash.molang.Token;
+
 /**
  * Basic binary operators common in programming languages.
  *
@@ -12,86 +14,86 @@ import java.util.regex.Pattern;
  * </p>
  */
 public enum Operator implements BinaryOperator {
-	ADD("+", 1) {
+	ADD("+") {
 		@Override
 		public double apply(double a, double b) {
 			return a + b;
 		}
 	},
-	SUB("-", 1) {
+	SUB("-") {
 		@Override
 		public double apply(double a, double b) {
 			return a - b;
 		}
 	},
-	MUL("*", 2) {
+	MUL("*") {
 		@Override
 		public double apply(double a, double b) {
 			return a * b;
 		}
 	},
-	DIV("/", 2) {
+	DIV("/") {
 		@Override
 		public double apply(double a, double b) {
 			/* To avoid any exceptions */
 			return a / (b == 0 ? 1 : b);
 		}
 	},
-	MOD("%", 2) {
+	MOD("%") {
 		@Override
 		public double apply(double a, double b) {
 			return a % b;
 		}
 	},
-	POW("^", 3) {
+	POW("^") {
 		@Override
 		public double apply(double a, double b) {
 			return Math.pow(a, b);
 		}
 	},
-	AND("&&", 5) {
+	AND("&&") {
 		@Override
 		public double apply(double a, double b) {
 			return a != 0 && b != 0 ? 1 : 0;
 		}
 	},
-	OR("||", 5) {
+	OR("||") {
 		@Override
 		public double apply(double a, double b) {
 			return a != 0 || b != 0 ? 1 : 0;
 		}
 	},
-	LESS("<", 5) {
+	LT("<") {
 		@Override
 		public double apply(double a, double b) {
 			return a < b ? 1 : 0;
 		}
 	},
-	LESS_THAN("<=", 5) {
+	LEQ("<=") {
 		@Override
 		public double apply(double a, double b) {
 			return a <= b ? 1 : 0;
 		}
 	},
-	GREATER_THAN(">=", 5) {
+	GEQ(">=") {
 		@Override
 		public double apply(double a, double b) {
 			return a >= b ? 1 : 0;
 		}
 	},
-	GREATER(">", 5) {
+	GT(">") {
 		@Override
 		public double apply(double a, double b) {
 			return a > b ? 1 : 0;
 		}
 	},
-	EQUALS("==", 5) {
+	EQ("==") {
 		@Override
 		public double apply(double a, double b) {
 			return equals(a, b) ? 1 : 0;
 		}
 	},
-	NOT_EQUALS("!=", 5) {
+	NEQ("!=") {
 		@Override
 		public double apply(double a, double b) {
 			return !equals(a, b) ? 1 : 0;
@@ -124,19 +126,32 @@ public enum Operator implements BinaryOperator {
 	 */
 	public final String sign;
 
-	/**
-	 * Value of this operation in relation to other operations (i.e
-	 * precedence importance)
-	 */
-	public final int precedence;
-
-	Operator(String sign, int precedence) {
+	Operator(String sign) {
 		this.sign = sign;
-		this.precedence = precedence;
 	}
 
 	public static Operator fromString(String op) {
 		return LOOKUP.get(op);
+	}
+
+	public static BinaryOperator from(Token operator) {
+		return switch (operator.tokenType()) {
+			case PLUS -> ADD;
+			case MINUS -> SUB;
+			case STAR -> MUL;
+			case SLASH -> DIV;
+			case PERCENT -> MOD;
+			case CARET -> POW;
+			case AND -> AND;
+			case OR -> OR;
+			case LESS_THAN -> LT;
+			case LESS_EQUAL -> LEQ;
+			case GREATER_THAN -> GEQ;
+			case GREATER_EQUAL -> GT;
+			case EQUAL_EQUAL -> EQ;
+			case BANG_EQUAL -> NEQ;
+			default -> null;
+		};
 	}
 
 	@Override

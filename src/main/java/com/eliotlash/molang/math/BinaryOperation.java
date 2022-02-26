@@ -1,5 +1,7 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Operator class
  * <p>
@@ -18,8 +20,8 @@ public class BinaryOperation implements IValue {
 	}
 
 	@Override
-	public double get() {
-		return this.operator.apply(a.get(), b.get());
+	public double evaluate(ExecutionContext ctx) {
+		return this.operator.apply(a.evaluate(ctx), b.evaluate(ctx));
 	}
 
 	@Override

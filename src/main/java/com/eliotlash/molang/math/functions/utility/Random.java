@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.utility;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 
@@ -13,26 +14,26 @@ public class Random extends Function {
 	}
 
 	@Override
-	public double get() {
+	public double evaluate(ExecutionContext ctx) {
 		double random = 0;
 
-		if (this.args.length >= 3) {
-			this.random.setSeed((long) this.getArg(2));
+		if (this.arguments.length >= 3) {
+			this.random.setSeed((long) this.evaluateArgument(ctx, 2));
 			random = this.random.nextDouble();
 		} else {
 			random = Math.random();
 		}
 
-		if (this.args.length >= 2) {
-			double a = this.getArg(0);
-			double b = this.getArg(1);
+		if (this.arguments.length >= 2) {
+			double a = this.evaluateArgument(ctx, 0);
+			double b = this.evaluateArgument(ctx, 1);
 
 			double min = Math.min(a, b);
 			double max = Math.max(a, b);
 
 			random = random * (max - min) + min;
-		} else if (this.args.length >= 1) {
-			random = random * this.getArg(0);
+		} else if (this.arguments.length >= 1) {
+			random = random * this.evaluateArgument(ctx, 0);
 		}
 
 		return random;

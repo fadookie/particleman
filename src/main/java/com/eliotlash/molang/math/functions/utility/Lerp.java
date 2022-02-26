@@ -1,5 +1,6 @@
 package com.eliotlash.molang.math.functions.utility;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.math.IValue;
 import com.eliotlash.molang.math.functions.Function;
 import com.eliotlash.molang.utils.Interpolations;
@@ -15,7 +16,7 @@ public class Lerp extends Function {
 	}
 
 	@Override
-	public double get() {
-		return Interpolations.lerp(this.getArg(0), this.getArg(1), this.getArg(2));
+	public double evaluate(ExecutionContext ctx) {
+		return Interpolations.lerp(this.evaluateArgument(ctx, 0), this.evaluateArgument(ctx, 1), this.evaluateArgument(ctx, 2));
 	}
 }

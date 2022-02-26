@@ -1,20 +1,22 @@
 package com.eliotlash.molang.math;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+
 /**
  * Negate operator class
  * <p>
  * This class is responsible for negating given value
  */
-public class Negate implements IValue {
-	public IValue value;
+public class BooleanNot implements IValue {
+	public final IValue value;
 
-	public Negate(IValue value) {
+	public BooleanNot(IValue value) {
 		this.value = value;
 	}
 
 	@Override
-	public double get() {
-		return this.value.get() == 0 ? 1 : 0;
+	public double evaluate(ExecutionContext ctx) {
+		return this.value.evaluate(ctx) == 0 ? 1 : 0;
 	}
 
 	@Override
