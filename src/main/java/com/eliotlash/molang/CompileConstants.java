@@ -3,15 +3,14 @@ package com.eliotlash.molang;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.eliotlash.molang.math.Constant;
-import com.eliotlash.molang.math.IValue;
+import com.eliotlash.molang.expressions.Expr;
 
 public class CompileConstants {
 
 	/**
 	 * Known, constant values that can be used in expressions.
 	 */
-	public Map<String, Constant> constants = new HashMap<>();
+	public Map<String, Expr.Constant> constants = new HashMap<>();
 
 	public CompileConstants() {
 		/* Some default values */
@@ -20,10 +19,10 @@ public class CompileConstants {
 	}
 
 	public void registerConstant(String name, double value) {
-		this.constants.put(name, new Constant(value));
+		this.constants.put(name, new Expr.Constant(value));
 	}
 
-	public IValue get(String name) {
+	public Expr get(String name) {
 		return this.constants.get(name);
 	}
 }

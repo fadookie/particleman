@@ -2,11 +2,10 @@ package com.eliotlash.molang;
 
 import static com.eliotlash.molang.TokenType.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import com.eliotlash.molang.expressions.MolangAssignment;
-import com.eliotlash.molang.math.*;
+import com.eliotlash.molang.expressions.*;
 
 public class Parser {
 
@@ -18,113 +17,169 @@ public class Parser {
 		this.input = input;
 	}
 
-	public IValue parse() {
-		IValue expr = expression();
+	public Expr parse() {
+		Expr expr = expression();
 		consume(EOF, "Expect end of expression.");
 		return expr;
 	}
 
-	private IValue expression() {
+	private Expr expression() {
 		return assignment();
 	}
 
-	private IValue assignment() {
-		IValue expr = equality();
+	private Expr assignment() {
+		Expr expr = boolOp();
 
 		if (match(EQUALS)) {
 			Token equals = previous();
-			IValue value = assignment();
+			Expr value = assignment();
 
-			if (expr instanceof Variable) {
-				return new MolangAssignment((Variable) expr, value);
+			if (expr instanceof Assignable v) {
+				return new Expr.Assignment(v, value);
 			}
 
-			throw new MolangException("Invalid assignment target.");
+			throw error(equals, "Invalid assignment target.");
 		}
 
 		return expr;
 	}
 
-	private IValue equality() {
-		IValue expr = comparison();
+	private Expr boolOp() {
+		var expr = equality();
+
+		while (match(AND, OR)) {
+			Token operator = previous();
+			Expr right = equality();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
+		}
+		return expr;
+	}
+
+	private Expr equality() {
+		Expr expr = comparison();
 
 		while (match(BANG_EQUAL, EQUAL_EQUAL)) {
 			Token operator = previous();
-			IValue right = comparison();
-			expr = new BinaryOperation(Operator.from(operator), expr, right);
+			Expr right = comparison();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
 		}
 
 		return expr;
 	}
 
-	private IValue comparison() {
+	private Expr comparison() {
 		var expr = term();
 
 		while (match(GREATER_THAN, GREATER_EQUAL, LESS_THAN, LESS_EQUAL)) {
 			Token operator = previous();
-			IValue right = term();
-			expr = new BinaryOperation(Operator.from(operator), expr, right);
+			Expr right = term();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
 		}
 
 		return expr;
 	}
 
-	private IValue term() {
+	private Expr term() {
 		var expr = factor();
 
 		while (match(MINUS, PLUS)) {
 			Token operator = previous();
-			IValue right = factor();
-			expr = new BinaryOperation(Operator.from(operator), expr, right);
+			Expr right = factor();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
 		}
 		return expr;
 	}
 
-	private IValue factor() {
-		var expr = unary();
+	private Expr factor() {
+		var expr = exponentiation();
 		while (match(STAR, SLASH, PERCENT)) {
 			Token operator = previous();
-			IValue right = unary();
-			expr = new BinaryOperation(Operator.from(operator), expr, right);
+			Expr right = exponentiation();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
 		}
 		return expr;
 	}
 
-	private IValue unary() {
-		if (match(NOT)) {
-			return new BooleanNot(primary());
+	private Expr exponentiation() {
+		var expr = unary();
+		while (match(CARET)) {
+			Token operator = previous();
+			Expr right = unary();
+			expr = new Expr.BinOp(Operator.from(operator), expr, right);
 		}
-		if (match(MINUS)) {
-			return new Negative(primary());
-		}
-		return primary();
+		return expr;
 	}
 
+	private Expr unary() {
+		if (match(NOT)) {
+			return new Expr.Not(access());
+		}
+		if (match(MINUS)) {
+			return new Expr.Negate(access());
+		}
+		return access();
+	}
 
+	private Expr access() {
+		Expr expr = primary();
 
-	private IValue primary() {
-		if (match(IDENTIFIER)) {
-			var base = previous();
-			if (match(DOT) && match(IDENTIFIER)) {
-				var extension = previous();
+		if (match(DOT)) {
+			Token dot = previous();
 
-				return new Variable(base.lexeme() + '.' + extension.lexeme());
+			if (!(expr instanceof Expr.Variable v)) {
+				throw error(dot, "Invalid access target.");
 			}
 
-			throw new MolangException("Expected '.' after identifier.");
+			if (match(IDENTIFIER)) {
+				return finishAccess(v);
+			} else {
+				throw error(dot, "Expect identifier after '.'.");
+			}
+		} else {
+			return expr;
+		}
+	}
+
+	private Expr finishAccess(Expr.Variable v) {
+		Token name = previous();
+
+		if (match(OPEN_PAREN)) {
+			List<Expr> arguments = arguments();
+
+			return new Expr.Call(v, name.lexeme(), arguments);
+		} else {
+			return new Expr.Access(v, name.lexeme());
+		}
+	}
+
+	private List<Expr> arguments() {
+		List<Expr> arguments = new ArrayList<>();
+		if (!check(CLOSE_PAREN)) {
+			do {
+				arguments.add(expression());
+			} while (match(COMMA));
+		}
+
+		consume(CLOSE_PAREN, "Expect ')' after arguments.");
+		return arguments;
+	}
+
+	private Expr primary() {
+		if (match(IDENTIFIER)) {
+			return new Expr.Variable(previous().lexeme());
 		}
 
 		if (match(NUMERAL)) {
-			return new Constant(Double.parseDouble(previous().lexeme()));
+			return new Expr.Constant(Double.parseDouble(previous().lexeme()));
 		}
 
 		if (match(OPEN_PAREN)) {
-			IValue expr = expression();
+			Expr expr = expression();
 			consume(CLOSE_PAREN, "Expect ')' after expression.");
-			return new Group(expr);
+			return new Expr.Group(expr);
 		}
 
-		throw new MolangException("Expect expression.");
+		throw error(peek(), "Expect expression.");
 	}
 
 	private Token consume(TokenType required, String error) {
@@ -132,7 +187,7 @@ public class Parser {
 			return advance();
 		}
 
-		throw new MolangException(error);
+		throw error(peek(), error);
 	}
 
 	private boolean matchKeyword(Keyword value) {
@@ -153,6 +208,10 @@ public class Parser {
 		}
 
 		return false;
+	}
+
+	private ParseException error(Token faulty, String message) {
+		return new ParseException(message);
 	}
 
 	private boolean isAtEnd() {

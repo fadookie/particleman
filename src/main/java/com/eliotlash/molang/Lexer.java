@@ -76,21 +76,14 @@ public class Lexer {
 			return;
 		}
 
-		var token = readOperator(c);
+		var token = tryOperator(c);
 
 		if (token != null) {
 			setToken(token);
-			return;
-		}
-
-		if (isDigit(c)) {
+		} else if (isDigit(c)) {
 			eatNumeral();
-			return;
-		}
-
-		if (isIdentifierStart(c)) {
+		} else if (isIdentifierStart(c)) {
 			eatIdentifier();
-			return;
 		}
 	}
 
@@ -120,10 +113,11 @@ public class Lexer {
 		while (isIdentifier(peek())) {
 			advance();
 		}
+
 		setToken(TokenType.IDENTIFIER);
 	}
 
-	private TokenType readOperator(char c) {
+	private TokenType tryOperator(char c) {
 		switch (c) {
 		case '!' -> {
 			if (match('=')) {
