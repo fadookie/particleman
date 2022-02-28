@@ -28,7 +28,7 @@ public class Parser {
 	}
 
 	private Expr assignment() {
-		Expr expr = boolOp();
+		Expr expr = disjunction();
 
 		if (match(EQUALS)) {
 			Token equals = previous();
@@ -44,13 +44,24 @@ public class Parser {
 		return expr;
 	}
 
-	private Expr boolOp() {
+	private Expr disjunction() {
+		var expr = conjunction();
+
+		while (match(OR)) {
+			Token operator = previous();
+			Expr right = conjunction();
+			expr = new Expr.BinOp(Operator.OR, expr, right);
+		}
+		return expr;
+	}
+
+	private Expr conjunction() {
 		var expr = equality();
 
-		while (match(AND, OR)) {
+		while (match(AND)) {
 			Token operator = previous();
 			Expr right = equality();
-			expr = new Expr.BinOp(Operator.from(operator), expr, right);
+			expr = new Expr.BinOp(Operator.AND, expr, right);
 		}
 		return expr;
 	}
@@ -68,12 +79,24 @@ public class Parser {
 	}
 
 	private Expr comparison() {
-		var expr = term();
+		var expr = coalesce();
 
 		while (match(GREATER_THAN, GREATER_EQUAL, LESS_THAN, LESS_EQUAL)) {
 			Token operator = previous();
-			Expr right = term();
+			Expr right = coalesce();
 			expr = new Expr.BinOp(Operator.from(operator), expr, right);
+		}
+
+		return expr;
+	}
+
+	private Expr coalesce() {
+		var expr = term();
+
+		while (match(COALESCE)) {
+			Token coalesce = previous();
+			Expr right = term();
+			expr = new Expr.Coalesce(expr, right);
 		}
 
 		return expr;

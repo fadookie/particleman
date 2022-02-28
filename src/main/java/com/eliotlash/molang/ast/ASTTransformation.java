@@ -1,7 +1,5 @@
 package com.eliotlash.molang.ast;
 
-import java.util.stream.Collectors;
-
 public class ASTTransformation implements Visitor<Expr> {
 
 	@Override
@@ -21,7 +19,12 @@ public class ASTTransformation implements Visitor<Expr> {
 
 	@Override
 	public Expr visitCall(Expr.Call expr) {
-		return new Expr.Call((Expr.Variable) visit(expr.target()), expr.member(), expr.arguments().stream().map(this::visit).collect(Collectors.toList()));
+		return new Expr.Call((Expr.Variable) visit(expr.target()), expr.member(), expr.arguments().stream().map(this::visit).toList());
+	}
+
+	@Override
+	public Expr visitCoalesce(Expr.Coalesce expr) {
+		return new Expr.Coalesce(visit(expr.value()), visit(expr.fallback()));
 	}
 
 	@Override

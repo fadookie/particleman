@@ -5,7 +5,7 @@ import com.eliotlash.molang.ast.Operator;
 
 public class TestBase {
 	protected static Expr.Access access(String var, String member) {
-		return new Expr.Access(new Expr.Variable(var), member);
+		return new Expr.Access(v(var), member);
 	}
 
 	protected static Expr.BinOp op(Expr left, Operator op, Expr right) {
@@ -18,5 +18,9 @@ public class TestBase {
 
 	protected static Expr.Constant c(double constant) {
 		return new Expr.Constant(constant);
+	}
+
+	protected static Expr.Variable v(String var) {
+		return new Expr.Variable(var);
 	}
 }

@@ -26,6 +26,12 @@ public class Evaluator implements Visitor<Double> {
 	}
 
 	@Override
+	public Double visitCoalesce(Expr.Coalesce expr) {
+		var value = evaluate(expr.value());
+		return value == null ? evaluate(expr.fallback()) : value;
+	}
+
+	@Override
 	public Double visitConstant(Expr.Constant expr) {
 		return expr.value();
 	}

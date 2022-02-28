@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.eliotlash.molang.ast.Expr;
+import com.eliotlash.molang.ast.Transformations;
+
 class FunctionsTest {
 
 	@Test
@@ -92,10 +95,16 @@ class FunctionsTest {
 	}
 
 	private void assertConstant(String expression) throws Exception {
-		//assertTrue(parser.parse(expression).isConstant());
+		Expr expr = Molang.parseExpression(expression)
+				.accept(Transformations.SIMPLIFY_CONSTANTS);
+
+		assertTrue(expr instanceof Expr.Constant);
 	}
 
 	private void assertNotConstant(String expression) throws Exception {
-		//assertFalse(parser.parse(expression).isConstant());
+		Expr expr = Molang.parseExpression(expression)
+				.accept(Transformations.SIMPLIFY_CONSTANTS);
+
+		assertFalse(expr instanceof Expr.Constant);
 	}
 }

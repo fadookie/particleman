@@ -1,7 +1,7 @@
 package com.eliotlash.molang.ast;
 
 public class Transformations {
-	public static final ASTTransformation CONSTANT_PROPAGATION = new ASTTransformation() {
+	public static final ASTTransformation SIMPLIFY_CONSTANTS = new ASTTransformation() {
 
 		@Override
 		public Expr visitBinOp(Expr.BinOp expr) {
@@ -14,6 +14,21 @@ public class Transformations {
 			}
 
 			return new Expr.BinOp(op, left, right);
+		}
+
+		@Override
+		public Expr visitGroup(Expr.Group expr) {
+			return visit(expr.value());
+		}
+
+		@Override
+		public Expr visitCoalesce(Expr.Coalesce expr) {
+			var left = visit(expr.value());
+			var right = visit(expr.fallback());
+			if (left instanceof Expr.Constant) {
+				return right;
+			}
+			return new Expr.Coalesce(left, right);
 		}
 
 		@Override

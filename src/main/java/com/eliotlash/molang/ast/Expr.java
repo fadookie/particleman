@@ -40,6 +40,17 @@ public interface Expr {
 	}
 
 	/**
+	 * left op right
+	 */
+	record Coalesce(Expr value, Expr fallback) implements Expr {
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visitCoalesce(this);
+		}
+	}
+
+	/**
 	 * target.member(arguments)
 	 */
 	record Call(Variable target, String member, List<Expr> arguments) implements Expr {

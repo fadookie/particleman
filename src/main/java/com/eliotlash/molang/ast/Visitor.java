@@ -9,6 +9,7 @@ public interface Visitor<R> {
 	R visitAssignment(Expr.Assignment expr);
 	R visitBinOp(Expr.BinOp expr);
 	R visitCall(Expr.Call expr);
+	R visitCoalesce(Expr.Coalesce expr);
 	R visitConstant(Expr.Constant expr);
 	R visitGroup(Expr.Group expr);
 	R visitNegate(Expr.Negate expr);
