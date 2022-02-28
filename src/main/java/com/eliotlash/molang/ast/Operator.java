@@ -1,4 +1,4 @@
-package com.eliotlash.molang.expressions;
+package com.eliotlash.molang.ast;
 
 import com.eliotlash.molang.Token;
 

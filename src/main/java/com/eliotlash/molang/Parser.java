@@ -5,7 +5,7 @@ import static com.eliotlash.molang.TokenType.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.eliotlash.molang.expressions.*;
+import com.eliotlash.molang.ast.*;
 
 public class Parser {
 

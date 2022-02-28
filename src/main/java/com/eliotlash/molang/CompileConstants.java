@@ -3,7 +3,7 @@ package com.eliotlash.molang;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.eliotlash.molang.expressions.Expr;
+import com.eliotlash.molang.ast.Expr;
 
 public class CompileConstants {
 

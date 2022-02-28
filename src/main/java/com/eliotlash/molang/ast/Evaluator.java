@@ -1,10 +1,10 @@
-package com.eliotlash.molang;
+package com.eliotlash.molang.ast;
 
-import com.eliotlash.molang.expressions.*;
+import com.eliotlash.molang.ast.*;
 import com.eliotlash.molang.utils.MathUtils;
-import com.eliotlash.molang.visitor.ExprVisitor;
+import com.eliotlash.molang.ast.Visitor;
 
-public class Evaluator implements ExprVisitor<Double> {
+public class Evaluator implements Visitor<Double> {
 	@Override
 	public Double visitAccess(Expr.Access expr) {
 		return null;
@@ -28,19 +28,19 @@ public class Evaluator implements ExprVisitor<Double> {
 			case DIV -> evaluate(expr.left()) / (evaluate(expr.right()) == 0 ? 1 : evaluate(expr.right()));
 			case MOD -> evaluate(expr.left()) % evaluate(expr.right());
 			case POW -> Math.pow(evaluate(expr.left()), evaluate(expr.right()));
-			case LT -> intoDouble(evaluate(expr.left()) < evaluate(expr.right()));
-			case LEQ -> intoDouble(evaluate(expr.left()) <= evaluate(expr.right()));
-			case GEQ -> intoDouble(evaluate(expr.left()) >= evaluate(expr.right()));
-			case GT -> intoDouble(evaluate(expr.left()) > evaluate(expr.right()));
-			case EQ -> intoDouble(MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
-			case NEQ -> intoDouble(!MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
+			case LT -> bool(evaluate(expr.left()) < evaluate(expr.right()));
+			case LEQ -> bool(evaluate(expr.left()) <= evaluate(expr.right()));
+			case GEQ -> bool(evaluate(expr.left()) >= evaluate(expr.right()));
+			case GT -> bool(evaluate(expr.left()) > evaluate(expr.right()));
+			case EQ -> bool(MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
+			case NEQ -> bool(!MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
 			// AND, OR should be lazily evaluated
-			case AND -> intoDouble(evaluate(expr.left()) != 0 && evaluate(expr.right()) != 0);
-			case OR -> intoDouble(evaluate(expr.left()) != 0 || evaluate(expr.right()) != 0);
+			case AND -> bool(evaluate(expr.left()) != 0 && evaluate(expr.right()) != 0);
+			case OR -> bool(evaluate(expr.left()) != 0 || evaluate(expr.right()) != 0);
 		};
 	}
 
-	private static double intoDouble(boolean b) {
+	private static double bool(boolean b) {
 		return b ? 1.0 : 0.0;
 	}
 

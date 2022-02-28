@@ -1,9 +1,7 @@
 package com.eliotlash.molang.functions;
 
-import java.util.Arrays;
-
 import com.eliotlash.molang.variables.ExecutionContext;
-import com.eliotlash.molang.expressions.Expr;
+import com.eliotlash.molang.ast.Expr;
 
 public abstract class Function {
 	protected Expr[] arguments;

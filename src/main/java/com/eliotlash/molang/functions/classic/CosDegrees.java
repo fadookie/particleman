@@ -2,7 +2,7 @@ package com.eliotlash.molang.functions.classic;
 
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.variables.ExecutionContext;
-import com.eliotlash.molang.expressions.Expr;
+import com.eliotlash.molang.ast.Expr;
 
 public class CosDegrees extends Function {
 	public CosDegrees(Expr[] values, String name) throws Exception {

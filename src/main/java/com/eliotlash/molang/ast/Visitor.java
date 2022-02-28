@@ -1,8 +1,10 @@
-package com.eliotlash.molang.visitor;
+package com.eliotlash.molang.ast;
 
-import com.eliotlash.molang.expressions.*;
+public interface Visitor<R> {
+	default R visit(Expr node) {
+		return node.accept(this);
+	}
 
-public interface ExprVisitor<R> {
 	R visitAccess(Expr.Access expr);
 	R visitAssignment(Expr.Assignment expr);
 	R visitBinaryOperation(Expr.BinOp expr);
