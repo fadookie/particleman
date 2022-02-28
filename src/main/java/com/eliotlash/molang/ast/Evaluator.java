@@ -1,9 +1,5 @@
 package com.eliotlash.molang.ast;
 
-import com.eliotlash.molang.ast.*;
-import com.eliotlash.molang.utils.MathUtils;
-import com.eliotlash.molang.ast.Visitor;
-
 public class Evaluator implements Visitor<Double> {
 	@Override
 	public Double visitAccess(Expr.Access expr) {
@@ -19,29 +15,8 @@ public class Evaluator implements Visitor<Double> {
 	}
 
 	@Override
-	public Double visitBinaryOperation(Expr.BinOp expr) {
-
-		return switch (expr.operator()) {
-			case ADD -> evaluate(expr.left()) + evaluate(expr.right());
-			case SUB -> evaluate(expr.left()) - evaluate(expr.right());
-			case MUL -> evaluate(expr.left()) * evaluate(expr.right());
-			case DIV -> evaluate(expr.left()) / (evaluate(expr.right()) == 0 ? 1 : evaluate(expr.right()));
-			case MOD -> evaluate(expr.left()) % evaluate(expr.right());
-			case POW -> Math.pow(evaluate(expr.left()), evaluate(expr.right()));
-			case LT -> bool(evaluate(expr.left()) < evaluate(expr.right()));
-			case LEQ -> bool(evaluate(expr.left()) <= evaluate(expr.right()));
-			case GEQ -> bool(evaluate(expr.left()) >= evaluate(expr.right()));
-			case GT -> bool(evaluate(expr.left()) > evaluate(expr.right()));
-			case EQ -> bool(MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
-			case NEQ -> bool(!MathUtils.epsilonEquals(evaluate(expr.left()), evaluate(expr.right())));
-			// AND, OR should be lazily evaluated
-			case AND -> bool(evaluate(expr.left()) != 0 && evaluate(expr.right()) != 0);
-			case OR -> bool(evaluate(expr.left()) != 0 || evaluate(expr.right()) != 0);
-		};
-	}
-
-	private static double bool(boolean b) {
-		return b ? 1.0 : 0.0;
+	public Double visitBinOp(Expr.BinOp expr) {
+		return expr.operator().apply(() -> evaluate(expr.left()), () -> evaluate(expr.right()));
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public interface Expr {
 
 		@Override
 		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitBinaryOperation(this);
+			return visitor.visitBinOp(this);
 		}
 	}
 

@@ -2,14 +2,7 @@ package com.eliotlash.molang.ast;
 
 import java.util.stream.Collectors;
 
-public class Transformation implements Visitor<Expr> {
-
-	public static final Transformation INLINE_PARENS = new Transformation() {
-		@Override
-		public Expr visitGroup(Expr.Group expr) {
-			return visit(expr.value());
-		}
-	};
+public class ASTTransformation implements Visitor<Expr> {
 
 	@Override
 	public Expr visitAccess(Expr.Access expr) {
@@ -22,7 +15,7 @@ public class Transformation implements Visitor<Expr> {
 	}
 
 	@Override
-	public Expr visitBinaryOperation(Expr.BinOp expr) {
+	public Expr visitBinOp(Expr.BinOp expr) {
 		return new Expr.BinOp(expr.operator(), visit(expr.left()), visit(expr.right()));
 	}
 

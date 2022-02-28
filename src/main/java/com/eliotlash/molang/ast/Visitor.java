@@ -7,7 +7,7 @@ public interface Visitor<R> {
 
 	R visitAccess(Expr.Access expr);
 	R visitAssignment(Expr.Assignment expr);
-	R visitBinaryOperation(Expr.BinOp expr);
+	R visitBinOp(Expr.BinOp expr);
 	R visitCall(Expr.Call expr);
 	R visitConstant(Expr.Constant expr);
 	R visitGroup(Expr.Group expr);

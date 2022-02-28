@@ -112,10 +112,10 @@ public class Parser {
 
 	private Expr unary() {
 		if (match(NOT)) {
-			return new Expr.Not(access());
+			return new Expr.Not(unary());
 		}
 		if (match(MINUS)) {
-			return new Expr.Negate(access());
+			return new Expr.Negate(unary());
 		}
 		return access();
 	}

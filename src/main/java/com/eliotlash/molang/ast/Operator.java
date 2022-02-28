@@ -1,6 +1,9 @@
 package com.eliotlash.molang.ast;
 
+import java.util.function.DoubleSupplier;
+
 import com.eliotlash.molang.Token;
+import com.eliotlash.molang.utils.MathUtils;
 
 /**
  * Basic binary operators common in programming languages.
@@ -55,6 +58,30 @@ public enum Operator {
 		};
 	}
 
+	public double apply(DoubleSupplier lhs, DoubleSupplier rhs) {
+		return switch (this) {
+			case ADD -> lhs.getAsDouble() + rhs.getAsDouble();
+			case SUB -> lhs.getAsDouble() - rhs.getAsDouble();
+			case MUL -> lhs.getAsDouble() * rhs.getAsDouble();
+			case DIV -> lhs.getAsDouble() / (rhs.getAsDouble() == 0 ? 1 : rhs.getAsDouble());
+			case MOD -> lhs.getAsDouble() % rhs.getAsDouble();
+			case POW -> Math.pow(lhs.getAsDouble(), rhs.getAsDouble());
+			case LT -> bool(lhs.getAsDouble() < rhs.getAsDouble());
+			case LEQ -> bool(lhs.getAsDouble() <= rhs.getAsDouble());
+			case GEQ -> bool(lhs.getAsDouble() >= rhs.getAsDouble());
+			case GT -> bool(lhs.getAsDouble() > rhs.getAsDouble());
+			case EQ -> bool(MathUtils.epsilonEquals(lhs.getAsDouble(), rhs.getAsDouble()));
+			case NEQ -> bool(!MathUtils.epsilonEquals(lhs.getAsDouble(), rhs.getAsDouble()));
+			// AND, OR should be lazily evaluated
+			case AND -> bool(lhs.getAsDouble() != 0 && rhs.getAsDouble() != 0);
+			case OR -> bool(lhs.getAsDouble() != 0 || rhs.getAsDouble() != 0);
+		};
+	}
+
+	private static double bool(boolean b) {
+		return b ? 1.0 : 0.0;
+	}
+
 	/**
 	 * Formats this operator as a string, given string representations of the operands.
 	 * @param a The string representation of the first, or left, operand.
@@ -65,4 +92,8 @@ public enum Operator {
 		return a + " " + sign + " " + b;
 	}
 
+	@Override
+	public String toString() {
+		return sign;
+	}
 }
