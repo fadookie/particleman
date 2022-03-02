@@ -1,6 +1,32 @@
 package com.eliotlash.molang.ast;
 
-public class Evaluator implements Visitor<Double> {
+public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
+
+	@Override
+	public Void visitExpression(Stmt.Expression stmt) {
+		return null;
+	}
+
+	@Override
+	public Void visitReturn(Stmt.Return stmt) {
+		return null;
+	}
+
+	@Override
+	public Void visitBreak(Stmt.Break stmt) {
+		return null;
+	}
+
+	@Override
+	public Void visitContinue(Stmt.Continue stmt) {
+		return null;
+	}
+
+	@Override
+	public Void visitLoop(Stmt.Loop stmt) {
+		return null;
+	}
+
 	@Override
 	public Double visitAccess(Expr.Access expr) {
 		return null;
@@ -20,8 +46,12 @@ public class Evaluator implements Visitor<Double> {
 	}
 
 	@Override
-	public Double visitCall(Expr.Call expr) {
+	public Double visitBlock(Expr.Block expr) {
+		return 0.0;
+	}
 
+	@Override
+	public Double visitCall(Expr.Call expr) {
 		return null;
 	}
 

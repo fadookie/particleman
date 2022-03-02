@@ -1,11 +1,15 @@
 package com.eliotlash.molang;
 
-import static com.eliotlash.molang.TokenType.*;
+import static com.eliotlash.molang.lexer.TokenType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import com.eliotlash.molang.lexer.Lexer;
+import com.eliotlash.molang.lexer.Token;
+import com.eliotlash.molang.lexer.TokenType;
 
 public class LexerTest {
 

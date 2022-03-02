@@ -1,4 +1,4 @@
-package com.eliotlash.molang;
+package com.eliotlash.molang.lexer;
 
 public enum TokenType {
 

@@ -2,7 +2,7 @@ package com.eliotlash.molang.ast;
 
 import java.util.function.DoubleSupplier;
 
-import com.eliotlash.molang.Token;
+import com.eliotlash.molang.lexer.Token;
 import com.eliotlash.molang.utils.MathUtils;
 
 /**

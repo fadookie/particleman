@@ -1,4 +1,4 @@
-package com.eliotlash.molang;
+package com.eliotlash.molang.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +23,6 @@ public class Lexer {
 
 	public Lexer(String input) {
 		this.input = input;
-	}
-
-	public TokenType getCurrentToken() {
-		return null;
-	}
-
-	public String getCurrentLexeme() {
-		return null;
 	}
 
 	private boolean hasNextChar() {

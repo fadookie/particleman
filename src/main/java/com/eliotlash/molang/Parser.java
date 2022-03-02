@@ -1,14 +1,16 @@
 package com.eliotlash.molang;
 
-import static com.eliotlash.molang.TokenType.*;
+import static com.eliotlash.molang.lexer.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.eliotlash.molang.ast.*;
+import com.eliotlash.molang.lexer.Keyword;
+import com.eliotlash.molang.lexer.Token;
+import com.eliotlash.molang.lexer.TokenType;
 
 public class Parser {
-
 
 	private final List<Token> input;
 	private int current = 0;
@@ -17,10 +19,101 @@ public class Parser {
 		this.input = input;
 	}
 
-	public Expr parse() {
+	/**
+	 * Resets the parser to the beginning of the input.
+	 */
+	public void reset() {
+		current = 0;
+	}
+
+	/**
+	 * Parses the input, expecting it to be a single expression.
+	 * @return The parsed expression.
+	 */
+	public Expr parseExpression() {
 		Expr expr = expression();
 		consume(EOF, "Expect end of expression.");
 		return expr;
+	}
+
+	/**
+	 * Parses the input, expecting it to be a single statement.
+	 * @return The parsed statement.
+	 */
+	public Stmt parseStatement() {
+		Stmt expr = statement();
+		consume(EOF, "Expect end of statement.");
+		return expr;
+	}
+
+	/**
+	 * Parses the input, expecting it to be a list of statements.
+	 * @return The parsed list of statements.
+	 */
+	public List<Stmt> parse() {
+		var statements1 = new ArrayList<Stmt>();
+
+		while (!isAtEnd()) {
+			statements1.add(statement());
+		}
+		List<Stmt> statements = statements1;
+
+		consume(EOF, "Expect end of expression.");
+
+		return statements;
+	}
+
+	private Stmt statement() {
+		if (matchKeyword(Keyword.RETURN)) return returnStatement();
+		if (matchKeyword(Keyword.BREAK)) return breakStatement();
+		if (matchKeyword(Keyword.CONTINUE)) return continueStatement();
+		if (matchKeyword(Keyword.LOOP)) return loopStatement();
+
+		return expressionStatement();
+	}
+
+	private Stmt.Expression expressionStatement() {
+		Expr expr = expression();
+		consume(SEMICOLON, "Expect ';' after expression.");
+		return new Stmt.Expression(expr);
+	}
+
+	private Stmt breakStatement() {
+		consume(SEMICOLON, "Expect ';' after break statement.");
+		return new Stmt.Break();
+	}
+
+	private Stmt continueStatement() {
+		consume(SEMICOLON, "Expect ';' after continue statement.");
+		return new Stmt.Continue();
+	}
+
+	private Stmt loopStatement() {
+		var loop = previous();
+
+		consume(OPEN_PAREN, "Expect '(' for loop args.");
+
+		List<Expr> arguments = arguments();
+
+		if (arguments.size() != 2) {
+			throw error(peek(), "Expect 2 arguments for loop.");
+		}
+
+		consume(SEMICOLON, "Expect ';' after loop statement.");
+
+		Expr count = arguments.get(0);
+		Expr expr = arguments.get(1);
+
+		return new Stmt.Loop(count, expr);
+	}
+
+	private Stmt returnStatement() {
+		var returnTok = previous();
+
+		Expr value = expression();
+
+		consume(SEMICOLON, "Expect ';' after return statement.");
+		return new Stmt.Return(value);
 	}
 
 	private Expr expression() {
@@ -188,6 +281,10 @@ public class Parser {
 	}
 
 	private Expr primary() {
+		if (match(OPEN_BRACE)) {
+			return block();
+		}
+
 		if (match(IDENTIFIER)) {
 			return new Expr.Variable(previous().lexeme());
 		}
@@ -205,6 +302,16 @@ public class Parser {
 		throw error(peek(), "Expect expression.");
 	}
 
+	private Expr block() {
+		var statements = new ArrayList<Stmt>();
+
+		while (!isAtEnd() && !check(CLOSE_BRACE)) {
+			statements.add(statement());
+		}
+		consume(CLOSE_BRACE, "Expect '}' after block.");
+		return new Expr.Block(statements);
+	}
+
 	private Token consume(TokenType required, String error) {
 		if (check(required)) {
 			return advance();
@@ -213,10 +320,12 @@ public class Parser {
 		throw error(peek(), error);
 	}
 
-	private boolean matchKeyword(Keyword value) {
-		if (check(IDENTIFIER) && value.matches(peek().lexeme())) {
-			advance();
-			return true;
+	private boolean matchKeyword(Keyword... value) {
+		for (Keyword keyword : value) {
+			if (check(IDENTIFIER) && keyword.matches(peek().lexeme())) {
+				advance();
+				return true;
+			}
 		}
 
 		return false;
@@ -234,7 +343,7 @@ public class Parser {
 	}
 
 	private ParseException error(Token faulty, String message) {
-		return new ParseException(message);
+		return new ParseException(faulty, message);
 	}
 
 	private boolean isAtEnd() {

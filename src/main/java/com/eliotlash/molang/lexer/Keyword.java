@@ -1,4 +1,4 @@
-package com.eliotlash.molang;
+package com.eliotlash.molang.lexer;
 
 import java.util.Locale;
 

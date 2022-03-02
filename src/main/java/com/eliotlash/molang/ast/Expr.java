@@ -40,6 +40,20 @@ public interface Expr {
 	}
 
 	/**
+	 * {
+	 *     stmt;
+	 *     stmt;
+	 *     ...
+	 * }
+	 */
+	record Block(List<Stmt> statements) implements Expr {
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visitBlock(this);
+		}
+	}
+
+	/**
 	 * left op right
 	 */
 	record Coalesce(Expr value, Expr fallback) implements Expr {
@@ -123,5 +137,24 @@ public interface Expr {
 		public <R> R accept(Visitor<R> visitor) {
 			return visitor.visitVariable(this);
 		}
+	}
+
+	interface Visitor<R> {
+		default R visit(Expr node) {
+			return node.accept(this);
+		}
+
+		R visitAccess(Access expr);
+		R visitAssignment(Assignment expr);
+		R visitBinOp(BinOp expr);
+		R visitBlock(Block expr);
+		R visitCall(Call expr);
+		R visitCoalesce(Coalesce expr);
+		R visitConstant(Constant expr);
+		R visitGroup(Group expr);
+		R visitNegate(Negate expr);
+		R visitNot(Not expr);
+		R visitTernary(Ternary expr);
+		R visitVariable(Variable expr);
 	}
 }

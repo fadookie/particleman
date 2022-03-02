@@ -1,6 +1,31 @@
 package com.eliotlash.molang.ast;
 
-public class ASTTransformation implements Visitor<Expr> {
+public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt> {
+
+	@Override
+	public Stmt visitExpression(Stmt.Expression stmt) {
+		return new Stmt.Expression(visit(stmt.expr()));
+	}
+
+	@Override
+	public Stmt visitReturn(Stmt.Return stmt) {
+		return new Stmt.Return(visit(stmt.value()));
+	}
+
+	@Override
+	public Stmt visitBreak(Stmt.Break stmt) {
+		return stmt;
+	}
+
+	@Override
+	public Stmt visitContinue(Stmt.Continue stmt) {
+		return stmt;
+	}
+
+	@Override
+	public Stmt visitLoop(Stmt.Loop stmt) {
+		return new Stmt.Loop(visit(stmt.count()), visit(stmt.expr()));
+	}
 
 	@Override
 	public Expr visitAccess(Expr.Access expr) {
@@ -15,6 +40,11 @@ public class ASTTransformation implements Visitor<Expr> {
 	@Override
 	public Expr visitBinOp(Expr.BinOp expr) {
 		return new Expr.BinOp(expr.operator(), visit(expr.left()), visit(expr.right()));
+	}
+
+	@Override
+	public Expr visitBlock(Expr.Block expr) {
+		return new Expr.Block(expr.statements().stream().map(this::visit).toList());
 	}
 
 	@Override
